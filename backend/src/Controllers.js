@@ -186,6 +186,29 @@ exports.deleteRoom = async (req, res) => {
     if (!deletedRoom) {
       return res.status(404).send({ message: "Room not found" });
     }
+    const topic = await models.topic.findOne({ name: deletedRoom.topic });
+    if (topic.count > 1) {
+      await models.topic.findOneAndUpdate(
+        { name: topic.name },
+        { count: topic.count - 1 },
+        { new: true }
+      );
+    } else {
+      try {
+        const deletedTopic = await models.room.findOneAndDelete({
+          name: topic.name,
+        });
+        if (!deletedTopic) {
+          return res.status(404).send({ message: "Topic not found" });
+        }
+        res
+          .status(200)
+          .send({ message: "Topic deleted successfully", room: deletedTopic });
+      } catch (error) {
+        console.error("Error deleting topic:", error);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+    }
     res
       .status(200)
       .send({ message: "Room deleted successfully", room: deletedRoom });

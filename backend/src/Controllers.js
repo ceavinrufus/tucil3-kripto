@@ -124,7 +124,7 @@ exports.createRoom = async (req, res) => {
     description: req.body.description,
     type: req.body.type,
     date: time.substring(4, 24),
-    users: [req.body.user],
+    users: req.body.users,
   });
 
   const topic = await models.topic.findOne({ name: req.body.topic });

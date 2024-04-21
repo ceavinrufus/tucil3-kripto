@@ -181,7 +181,7 @@ exports.getRoom = async (req, res) => {
 exports.deleteRoom = async (req, res) => {
   try {
     const deletedRoom = await models.room.findOneAndDelete({
-      _id: req.params.roomId,
+      _id: req.body._id,
     });
     if (!deletedRoom) {
       return res.status(404).send({ message: "Room not found" });

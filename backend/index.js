@@ -16,8 +16,14 @@ app.use(cors());
 
 // body parserd
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "16mb" }));
+app.use(
+  bodyParser.urlencoded({
+    limit: "16mb",
+    extended: true,
+    parameterLimit: 16000,
+  })
+);
 
 // mongoose
 const mongoose = require("mongoose");

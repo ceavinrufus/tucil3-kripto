@@ -57,7 +57,7 @@ exports.buatUser = async (req, res) => {
   try {
     const saveUser = await user.save();
     res.send(saveUser);
-  } catch {
+  } catch (err) {
     res.status(400).send(err);
   }
 };
@@ -122,6 +122,7 @@ exports.createRoom = async (req, res) => {
     name: req.body.name,
     topic: req.body.topic,
     description: req.body.description,
+    type: req.body.type,
     date: time.substring(4, 24),
     users: [req.body.user],
   });
@@ -144,7 +145,7 @@ exports.createRoom = async (req, res) => {
   try {
     const saveRoom = await room.save();
     res.status(200).send(saveRoom);
-  } catch {
+  } catch (err) {
     res.status(400).send(err);
   }
 };
@@ -195,23 +196,18 @@ exports.deleteRoom = async (req, res) => {
       );
     } else {
       try {
-        const deletedTopic = await models.room.findOneAndDelete({
+        const deletedTopic = await models.topic.findOneAndDelete({
           name: topic.name,
         });
         if (!deletedTopic) {
           return res.status(404).send({ message: "Topic not found" });
         }
-        res
-          .status(200)
-          .send({ message: "Topic deleted successfully", room: deletedTopic });
       } catch (error) {
         console.error("Error deleting topic:", error);
         res.status(500).send({ message: "Internal Server Error" });
       }
     }
-    res
-      .status(200)
-      .send({ message: "Room deleted successfully", room: deletedRoom });
+    res.status(200).send({ message: "Room deleted successfully" });
   } catch (error) {
     console.error("Error deleting room:", error);
     res.status(500).send({ message: "Internal Server Error" });
@@ -230,6 +226,7 @@ exports.createPesan = async (req, res) => {
   const pesan = new models.pesan({
     pesan: req.body.pesan,
     date: time.substring(4, 24),
+    attachment: req.body.attachment,
     sender: req.body.sender,
     roomId: req.body.roomId,
   });
@@ -237,7 +234,7 @@ exports.createPesan = async (req, res) => {
   try {
     const savePesan = await pesan.save();
     res.status(200).send(savePesan);
-  } catch {
+  } catch (err) {
     res.status(400).send(err);
   }
 };

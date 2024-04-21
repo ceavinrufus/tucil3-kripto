@@ -16,6 +16,7 @@ const roomSchema = new Schema({
   name: String,
   topic: String,
   description: String,
+  type: String,
   date: String,
   users: Array,
 });
@@ -33,6 +34,10 @@ const topic = mongoose.model("topic", topicSchema);
 // modul pesan
 const pesanSchema = new Schema({
   pesan: String,
+  attachment: {
+    name: String,
+    content: Buffer,
+  },
   date: String,
   sender: String,
   roomId: String,

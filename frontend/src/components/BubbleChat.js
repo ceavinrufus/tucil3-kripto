@@ -18,11 +18,13 @@ const downloadText = (text, filename) => {
 const BubbleChat = ({ bubble, privateKey }) => {
   const username = JSON.parse(localStorage.getItem("user")).username;
   const [decryptedText, setDecryptedText] = useState("");
+  const [decryptedFile, setDecryptedFile] = useState();
 
   const rsa = new RSA();
 
   const handleDecrypt = () => {
     const decrypted = rsa.decrypt(bubble.pesan, privateKey);
+    const decryptedFile = rsa.decrypt(bubble.attachment.content, privateKey);
     setDecryptedText(decrypted);
   };
 
@@ -48,6 +50,21 @@ const BubbleChat = ({ bubble, privateKey }) => {
           <p className="break-all bg-gray-200 p-2 rounded">
             {!bubble.isSystemMessage ? btoa(bubble.pesan) : bubble.pesan}
           </p>
+          {bubble.attachment?.name && (
+            <button
+              className={`underline text-xs text-[#44288F] text-left w-full ${
+                bubble.sender === username && "text-right"
+              }`}
+              onClick={() =>
+                downloadFile(
+                  bufferToUint8Array(bubble.attachment?.content),
+                  bubble.attachment?.name
+                )
+              }
+            >
+              {bubble.attachment?.name}
+            </button>
+          )}
           {bubble.sender !== username && !bubble.isSystemMessage && (
             <>
               <button
@@ -69,11 +86,28 @@ const BubbleChat = ({ bubble, privateKey }) => {
               </button>
             </>
           )}
-          {decryptedText && (
+          {(decryptedText || bubble.attachment?.name) && (
             <>
-              <p className="break-all bg-green-200 p-2 rounded mt-2">
-                {decryptedText}
-              </p>
+              {decryptedText && (
+                <p className="break-all bg-green-200 p-2 rounded mt-2">
+                  {decryptedText}
+                </p>
+              )}
+              {bubble.attachment?.name && (
+                <button
+                  className={`underline text-xs text-[#44288F] text-left w-full ${
+                    bubble.sender === username && "text-right"
+                  }`}
+                  onClick={() =>
+                    downloadFile(
+                      bufferToUint8Array(bubble.attachment?.content),
+                      bubble.attachment?.name
+                    )
+                  }
+                >
+                  {bubble.attachment?.name}
+                </button>
+              )}
               <button
                 onClick={() =>
                   downloadText(
@@ -86,21 +120,6 @@ const BubbleChat = ({ bubble, privateKey }) => {
                 Download Decrypted
               </button>
             </>
-          )}
-          {bubble.attachment?.name && (
-            <button
-              className={`underline text-xs text-[#44288F] text-left w-full ${
-                bubble.sender === username && "text-right"
-              }`}
-              onClick={() =>
-                downloadFile(
-                  bufferToUint8Array(bubble.attachment?.content),
-                  bubble.attachment?.name
-                )
-              }
-            >
-              {bubble.attachment?.name}
-            </button>
           )}
         </div>
       </div>

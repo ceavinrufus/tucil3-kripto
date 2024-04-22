@@ -241,6 +241,7 @@ exports.createPesan = async (req, res) => {
   const pesan = new models.pesan({
     pesan: req.body.pesan,
     attachment: req.body.attachment,
+    key: req.body.key,
     date: time.substring(4, 24),
     sender: req.body.sender,
     roomId: req.body.roomId,

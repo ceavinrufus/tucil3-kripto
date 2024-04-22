@@ -40,6 +40,10 @@ const pesanSchema = new Schema({
     name: String,
     content: [String],
   },
+  key: {
+    name: String,
+    content: Buffer,
+  },
   date: String,
   sender: String,
   roomId: String,

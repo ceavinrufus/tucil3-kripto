@@ -23,7 +23,11 @@ const Simulator = () => {
         <div className="space-y-1">
           <h1 className="text-2xl font-bold">Simualtion Room</h1>
           <h1 className="text-xl">
-            Too use the real chat functionality, please login.
+            Too use the real chat functionality, please{" "}
+            <a className="underline " href="/login">
+              login
+            </a>
+            .
           </h1>
         </div>
       </div>

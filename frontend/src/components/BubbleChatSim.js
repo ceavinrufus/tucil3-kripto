@@ -70,6 +70,18 @@ const BubbleChatSim = ({ user, bubble }) => {
               {bubble.attachment?.name}
             </button>
           )}
+          {bubble.key?.name && (
+            <button
+              className={`underline text-xs text-[#44288F] text-left w-full ${
+                bubble.sender === user.name && "text-right"
+              }`}
+              onClick={() =>
+                downloadFile(bubble.key?.content, bubble.key?.name)
+              }
+            >
+              {bubble.key?.name}
+            </button>
+          )}
           {bubble.sender !== user.name && !bubble.isSystemMessage && (
             <div className="flex gap-2">
               <button

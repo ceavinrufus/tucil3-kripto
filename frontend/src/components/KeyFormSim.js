@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import RSA from "../utils/RSA";
 import ReaderKey from "./ReaderKey";
 
@@ -19,15 +19,14 @@ function KeyFormSim({ user, encryptKey, setEncryptKey, setMessages, setUser }) {
 
   const sendPublicKey = (e) => {
     e.preventDefault();
-    console.log(publicKey);
     const file = new Blob([JSON.stringify(publicKey)], { type: "text/plain" });
     if (file) {
       const time = new Date().toString();
       const bubble = {
         pesan: "Sent a public key",
-        attachment: {
+        key: {
           name: `publicKey_${user.name}.pub`,
-          content: Uint8Array(file),
+          content: file,
         },
         date: time.substring(4, 24),
         sender: user.name,

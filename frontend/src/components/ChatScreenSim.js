@@ -24,7 +24,7 @@ function ChatScreenSim({ user, setUser, messages, setMessages }) {
             <p className="text-white">{user.name}</p>
           </div>
           <button
-            className="text-white flex items-center gap-2"
+            className="text-white flex items-center gap-2 hover:bg-[#724ed3] px-2 py-1 rounded-2xl transition-all"
             onClick={handleToggle}
           >
             {showKey ? (

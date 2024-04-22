@@ -21,7 +21,6 @@ const BubbleChat = ({ bubble, privateKey }) => {
   const [decryptedFile, setDecryptedFile] = useState();
 
   const rsa = new RSA();
-
   const handleDecrypt = () => {
     const decrypted = rsa.decrypt(bubble.pesan, privateKey);
     if (bubble.attachment) {
@@ -69,6 +68,21 @@ const BubbleChat = ({ bubble, privateKey }) => {
               }
             >
               {bubble.attachment?.name}
+            </button>
+          )}
+          {bubble.key?.name && (
+            <button
+              className={`underline text-xs text-[#44288F] text-left w-full ${
+                bubble.sender === username && "text-right"
+              }`}
+              onClick={() =>
+                downloadFile(
+                  bufferToUint8Array(bubble.key?.content),
+                  bubble.key?.name
+                )
+              }
+            >
+              {bubble.key?.name}
             </button>
           )}
           {bubble.sender !== username && !bubble.isSystemMessage && (

@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import RSA from "../utils/RSA";
 import axios from "axios";
-import ReaderFile from "./ReaderFile";
 import ReaderKey from "./ReaderKey";
 
 function KeyForm({ room, socket, encryptKey, setEncryptKey }) {
@@ -47,9 +46,12 @@ function KeyForm({ room, socket, encryptKey, setEncryptKey }) {
     const file = new Blob([JSON.stringify(publicKey)], { type: "text/plain" });
     if (file) {
       socket.emit(
-        "send-message",
+        "send-key",
         "Sent a public key",
-        { name: "publicKey.pub", content: Uint8Array(file) },
+        {
+          name: "publicKey.pub",
+          content: file,
+        },
         room._id,
         JSON.parse(localStorage.getItem("user")).username,
         true

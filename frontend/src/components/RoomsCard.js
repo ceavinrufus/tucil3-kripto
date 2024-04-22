@@ -2,7 +2,6 @@ import React from "react";
 import { BsFillPeopleFill } from "react-icons/bs";
 import { BsPersonFill } from "react-icons/bs";
 import { Link } from "react-router-dom";
-import { CgProfile } from "react-icons/cg";
 
 const RoomsCard = ({ username, room }) => {
   return (
@@ -43,10 +42,20 @@ const RoomsCard = ({ username, room }) => {
               <BsFillPeopleFill /> {room.users.length} joined
             </div>
           ) : (
-            <div className="flex items-center gap-1 text-[#5E39C4]">
+            <Link
+              to={
+                "/profile/" +
+                room.users.filter((uname) => uname !== username)[0]
+              }
+              className="flex items-center gap-1 text-[#5E39C4]"
+            >
               <BsPersonFill />
-              {room.users.filter((uname) => uname !== username)[0]}
-            </div>
+              {room.users?.length > 1 ? (
+                room.users.filter((uname) => uname !== username)[0]
+              ) : (
+                <>Empty Room</>
+              )}
+            </Link>
           )}
 
           <Link to={"/room"} state={room}>

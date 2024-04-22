@@ -8,7 +8,11 @@ const BubbleChat = ({ bubble }) => {
   const username = JSON.parse(localStorage.getItem("user")).username;
 
   return (
-    <div className="flex divide-x-[3px] divide-[#F58F00]">
+    <div
+      className={`flex divide-x-4 ${
+        bubble.isSystemMessage ? "divide-[#f50000]" : "divide-[#F58F00]"
+      }`}
+    >
       {bubble.sender !== username && <div></div>}
       <div className="text-sm sm:text-base p-2 sm:py-4 sm:px-8 space-y-2 w-full">
         <div

@@ -52,6 +52,8 @@ exports.buatUser = async (req, res) => {
     bio: "",
     password: password,
     photoProfile: "-",
+    publicKey: null,
+    privateKey: null,
   });
 
   try {
@@ -225,10 +227,11 @@ exports.createPesan = async (req, res) => {
   const time = new Date().toString();
   const pesan = new models.pesan({
     pesan: req.body.pesan,
-    date: time.substring(4, 24),
     attachment: req.body.attachment,
+    date: time.substring(4, 24),
     sender: req.body.sender,
     roomId: req.body.roomId,
+    isSystemMessage: req.body.isSystemMessage,
   });
 
   try {

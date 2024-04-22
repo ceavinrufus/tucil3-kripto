@@ -16,6 +16,7 @@ const ChatRooms = ({ rooms, increment, setIncrement }) => {
   };
 
   const username = JSON.parse(localStorage.getItem("user")).username;
+  const roomsFiltered = rooms.filter((room) => room.users.includes(username));
 
   return (
     <>
@@ -23,7 +24,10 @@ const ChatRooms = ({ rooms, increment, setIncrement }) => {
         <div className="flex items-center justify-between mb-2">
           <div className="">
             <h1 className="font-bold">CHAT ROOMS</h1>
-            <p>{rooms.length} rooms available</p>
+            <p>
+              {roomsFiltered.length}{" "}
+              {roomsFiltered.length === 1 ? "room" : "rooms"}
+            </p>
           </div>
           <Pagination
             increment={increment}
@@ -42,8 +46,7 @@ const ChatRooms = ({ rooms, increment, setIncrement }) => {
           </div> */}
         </div>
         <div className="">
-          {rooms
-            .filter((room) => room.users.includes(username))
+          {roomsFiltered
             .slice((increment - 1) * 5, increment * 5)
             .map((room, id) => (
               <RoomsCard username={username} room={room} key={id} />

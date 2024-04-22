@@ -97,6 +97,29 @@ class RSA {
     }
     return decrypted.join("");
   }
+
+  encryptFile(plaintext, publicKey) {
+    const { e, n } = publicKey;
+    const encrypted = [];
+    for (let i = 0; i < plaintext.length; i++) {
+      const charCode = plaintext.charCodeAt(i);
+      const encryptedCharCode = charCode ** e % n;
+      encrypted.push(encryptedCharCode.toString());
+    }
+    return encrypted.join(" ");
+  }
+
+  decryptFile(ciphertext, privateKey) {
+    const { d, n } = privateKey;
+    const decrypted = [];
+    const encryptedCodes = ciphertext.split(" ");
+    for (let i = 0; i < encryptedCodes.length; i++) {
+      const encryptedCharCode = encryptedCodes[i];
+      const decryptedCharCode = encryptedCharCode ** d % n;
+      decrypted.push(String.fromCharCode(Number(decryptedCharCode)));
+    }
+    return decrypted.join("");
+  }
 }
 
 // Contoh penggunaan:

@@ -19,7 +19,8 @@ function ChatForm({ room, isJoined, socket }) {
         pesan,
         { name: fileName, content: file },
         room._id,
-        JSON.parse(localStorage.getItem("user")).username
+        JSON.parse(localStorage.getItem("user")).username,
+        false
       );
     }
     setFile(null);
@@ -32,17 +33,23 @@ function ChatForm({ room, isJoined, socket }) {
     const key = `e: ${newRsa.publicKey.e}, n: ${newRsa.publicKey.n}`;
     setPublicKey(key);
     setShowDownloadBtn(true);
-};
+  };
 
-const downloadPublicKey = () => {
-  const element = document.createElement("a");
-  const file = new Blob([publicKey], {type: 'text/plain'});
-  element.href = URL.createObjectURL(file);
-  element.download = "publicKey.pub";
-  document.body.appendChild(element);
-  element.click(); 
-  document.body.removeChild(element);
-}
+  const downloadPublicKey = (e) => {
+    e.preventDefault();
+
+    const file = new Blob([publicKey], { type: "text/plain" });
+    if (file) {
+      socket.emit(
+        "send-message",
+        "Sent a public key",
+        { name: "publicKey.pub", content: file },
+        room._id,
+        JSON.parse(localStorage.getItem("user")).username,
+        true
+      );
+    }
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -85,20 +92,20 @@ const downloadPublicKey = () => {
       </form>
       <div className="flex text-xs md:text-base text-[#fff] gap-2 w-full">
         <button
-          className="w-1/4 bg-[#44288F] px-4 py-2 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA]"
+          className="w-1/6 bg-[#44288F] px-4 py-2 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA]"
           onClick={initializeRSA}
         >
-          Generate Public Key
+          Generate Key
         </button>
         {showDownloadBtn && (
           <button
-            className="bg-[#44288F] px-4 py-2 rounded-md"
+            className="w-1/6 bg-[#44288F] px-4 py-2 rounded-md"
             onClick={downloadPublicKey}
           >
             Download Public Key
           </button>
         )}
-        <div className="w-3/4 border border-[#44288F] px-4 py-2 rounded-md text-[#000]">
+        <div className="flex-grow border border-[#44288F] px-4 py-2 rounded-md text-[#000]">
           Public Key: {publicKey}
         </div>
       </div>

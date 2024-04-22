@@ -8,6 +8,8 @@ const userSchema = new Schema({
   password: String,
   bio: String,
   photoProfile: String,
+  publicKey: Number,
+  privateKey: Number,
 });
 const user = mongoose.model("user", userSchema);
 
@@ -26,7 +28,7 @@ const room = mongoose.model("room", roomSchema);
 
 const topicSchema = new Schema({
   name: String,
-  count: Number,
+  count: { type: Number, default: 0 },
 });
 
 const topic = mongoose.model("topic", topicSchema);
@@ -41,6 +43,10 @@ const pesanSchema = new Schema({
   date: String,
   sender: String,
   roomId: String,
+  isSystemMessage: {
+    type: Boolean,
+    default: false,
+  },
 });
 const pesan = mongoose.model("pesan", pesanSchema);
 

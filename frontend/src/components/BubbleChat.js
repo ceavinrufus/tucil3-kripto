@@ -24,7 +24,13 @@ const BubbleChat = ({ bubble, privateKey }) => {
 
   const handleDecrypt = () => {
     const decrypted = rsa.decrypt(bubble.pesan, privateKey);
-    const decryptedFile = rsa.decrypt(bubble.attachment.content, privateKey);
+    if (bubble.attachment) {
+      const decryptedFile = rsa.decryptFile(
+        bufferToUint8Array(bubble.attachment?.content),
+        privateKey
+      );
+      setDecryptedFile(decryptedFile);
+    }
     setDecryptedText(decrypted);
   };
 
@@ -86,7 +92,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
               </button>
             </>
           )}
-          {(decryptedText || bubble.attachment?.name) && (
+          {(decryptedText || decryptedFile) && bubble.sender !== username && (
             <>
               {decryptedText && (
                 <p className="break-all bg-green-200 p-2 rounded mt-2">
@@ -99,10 +105,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
                     bubble.sender === username && "text-right"
                   }`}
                   onClick={() =>
-                    downloadFile(
-                      bufferToUint8Array(bubble.attachment?.content),
-                      bubble.attachment?.name
-                    )
+                    downloadFile(decryptedFile, bubble.attachment?.name)
                   }
                 >
                   {bubble.attachment?.name}

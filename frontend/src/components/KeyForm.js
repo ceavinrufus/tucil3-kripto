@@ -71,7 +71,7 @@ function KeyForm({ room, socket, encryptKey, setEncryptKey }) {
     const element = document.createElement("a");
     const file = new Blob([JSON.stringify(publicKey)], { type: "text/plain" });
     element.href = URL.createObjectURL(file);
-    element.download = "publicKey.pri";
+    element.download = "publicKey.pub";
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);

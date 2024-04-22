@@ -5,6 +5,16 @@ import { downloadFile } from "../utils/downloadFile";
 import { bufferToUint8Array } from "../utils/converter";
 import RSA from "../utils/RSA";
 
+const downloadText = (text, filename) => {
+  const element = document.createElement("a");
+  const file = new Blob([text], { type: 'text/plain' });
+  element.href = URL.createObjectURL(file);
+  element.download = filename || 'download.txt'; // Default filename if none provided
+  document.body.appendChild(element); // Append the element to the body
+  element.click(); // Simulate click to trigger download
+  document.body.removeChild(element); // Clean up
+}
+
 const BubbleChat = ({ bubble, privateKey }) => {
   const username = JSON.parse(localStorage.getItem("user")).username;
   const [toggleDecrypt, setToggleDecrypt] = useState(false);
@@ -20,6 +30,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
       {bubble.sender !== username && <div></div>}
       <div className="text-sm sm:text-base p-2 sm:py-4 sm:px-8 space-y-2 w-full">
         <div
+        
           className={`flex gap-4 md:gap-12 items-center w-full justify-between ${
             bubble.sender === username && "flex-row-reverse"
           }`}
@@ -48,65 +59,50 @@ const BubbleChat = ({ bubble, privateKey }) => {
           </div>
         </div>
         <div className="">
-          {bubble.pesan && (
-            <>
-              <div
-                className={` ${
-                  bubble.sender === username && "flex justify-end items-center"
-                }`}
-              >
-                <div className="flex flex-col">
-                  <div className={`flex gap-2 overflow-x-auto`}>
-                    {!bubble.isSystemMessage ? (
-                      <p className={`break-all`}>{btoa(bubble.pesan)}</p>
-                    ) : (
-                      <p className={`break-all`}>{bubble.pesan}</p>
-                    )}
-
-                    {!bubble.isSystemMessage && bubble.sender !== username && (
-                      <button
-                        onClick={() => setToggleDecrypt(!toggleDecrypt)}
-                        className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA] text-xs md:text-sm"
-                      >
-                        Decrypt
-                      </button>
-                    )}
-                  </div>
-                  {/* Border */}
-                  {!bubble.isSystemMessage && toggleDecrypt && (
-                    <p className="border my-1 border-b-[#44288F]"></p>
-                  )}
-                </div>
+        {bubble.pesan && (
+            <div className={`flex flex-col ${bubble.sender === username && "items-end"}`}>
+              <div className="flex justify-between items-center w-full">
+                <p className="break-all">{!bubble.isSystemMessage ? btoa(bubble.pesan) : bubble.pesan}</p>
+                {bubble.sender !== username && !bubble.isSystemMessage && (
+                  <>
+                    <button
+                      onClick={() => downloadText(btoa(bubble.pesan), `Encrypted_Message_${bubble.date}.txt`)}
+                      className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md"
+                    >
+                      Download Encrypted
+                    </button>
+                    <button
+                      onClick={() => setToggleDecrypt(!toggleDecrypt)}
+                      className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md ml-2"
+                    >
+                      Decrypt
+                    </button>
+                  </>
+                )}
               </div>
-              {!bubble.isSystemMessage && toggleDecrypt && (
-                <p
-                  className={`w-max flex ${
-                    bubble.sender === username && "flex-row-reverse"
-                  }`}
-                >
-                  {rsa.decrypt(bubble.pesan, privateKey)}
-                </p>
+              {toggleDecrypt && bubble.sender !== username && (
+                <>
+                  <p className="border-t mt-2 pt-2 border-[#44288F] break-all">{rsa.decrypt(bubble.pesan, privateKey)}</p>
+                  <button
+                    onClick={() => downloadText(rsa.decrypt(bubble.pesan, privateKey), `Decrypted_Message_${bubble.date}.txt`)}
+                    className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2"
+                  >
+                    Download Decrypted
+                  </button>
+                </>
               )}
-            </>
+            </div>
           )}
           {bubble.attachment?.name && (
             <button
-              className={`underline text-xs text-[#44288F] text-left w-full ${
-                bubble.sender === username && "text-right"
-              }`}
-              onClick={() =>
-                downloadFile(
-                  bufferToUint8Array(bubble.attachment?.content),
-                  bubble.attachment?.name
-                )
-              }
+              className={`underline text-xs text-[#44288F] text-left w-full ${bubble.sender === username && "text-right"}`}
+              onClick={() => downloadFile(bufferToUint8Array(bubble.attachment?.content), bubble.attachment?.name)}
             >
               {bubble.attachment?.name ? bubble.attachment?.name : ""}
             </button>
           )}
         </div>
       </div>
-
       {bubble.sender === username && <div></div>}
     </div>
   );

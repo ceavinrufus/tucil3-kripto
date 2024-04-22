@@ -77,7 +77,7 @@ class RSA {
       const encrypted = [];
       for (let i = 0; i < plaintext.length; i++) {
           const charCode = plaintext.charCodeAt(i);
-          const encryptedCharCode = BigInt(charCode) ** BigInt(e) % BigInt(n);
+          const encryptedCharCode = charCode ** e % n;
           encrypted.push(encryptedCharCode.toString());
       }
       return encrypted.join(" ");
@@ -88,8 +88,8 @@ class RSA {
       const decrypted = [];
       const encryptedCodes = ciphertext.split(" ");
       for (let i = 0; i < encryptedCodes.length; i++) {
-          const encryptedCharCode = BigInt(encryptedCodes[i]);
-          const decryptedCharCode = (encryptedCharCode ** BigInt(d) % BigInt(n));
+          const encryptedCharCode = encryptedCodes[i];
+          const decryptedCharCode = (encryptedCharCode ** d % n);
           decrypted.push(String.fromCharCode(Number(decryptedCharCode)));
       }
       return decrypted.join("");

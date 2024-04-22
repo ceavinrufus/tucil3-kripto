@@ -72,7 +72,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
             </button>
           )}
           {bubble.sender !== username && !bubble.isSystemMessage && (
-            <>
+            <div className="flex gap-2">
               <button
                 onClick={() =>
                   downloadText(
@@ -90,7 +90,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
               >
                 Decrypt
               </button>
-            </>
+            </div>
           )}
           {(decryptedText || decryptedFile) && bubble.sender !== username && (
             <>

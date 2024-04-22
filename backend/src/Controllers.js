@@ -117,6 +117,19 @@ exports.editProfile = async (req, res) => {
   }
 };
 
+// update key
+exports.updateKey = async (req, res) => {
+  const user = await models.user.findOneAndUpdate(
+    { _id: req.body._id },
+    {
+      publicKey: req.body.publicKey,
+      privateKey: req.body.privateKey,
+    },
+    { new: true }
+  );
+  res.status(200).send(user);
+};
+
 // create room
 exports.createRoom = async (req, res) => {
   const time = new Date().toString();

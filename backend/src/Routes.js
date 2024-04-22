@@ -17,6 +17,7 @@ app.post(
   Controllers.uploadPhotoProfile,
   Controllers.buatPhotoProfile
 );
+app.post("/update-key", Controllers.updateKey);
 
 // room
 app.post("/create-room", Controllers.createRoom);

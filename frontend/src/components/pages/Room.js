@@ -5,6 +5,7 @@ import { CgProfile } from "react-icons/cg";
 import axios from "axios";
 import io from "socket.io-client";
 import ChatForm from "../ChatForm";
+import KeyForm from "../KeyForm";
 
 const socket = io.connect(
   process.env.NODE_ENV === "development"
@@ -181,34 +182,37 @@ const Room = ({ user }) => {
           </div>
         </div>
 
-        {/* Participants */}
-        <div className="flex-1 order-first md:order-2 divide-y-2 h-3/5">
-          <div className="bg-[#FFCC85] px-4 py-2 text-[#000] rounded-t-md">
-            <div className="flex">
-              <h1
-                className="text-white md:text-black md:mx-left mx-auto md:cursor-default cursor-pointer"
-                onClick={() => toggleClass()}
-              >
-                PARTICIPANTS
-              </h1>
+        <div className="h-3/5 flex-1 flex flex-col-reverse gap-5">
+          {/* Participants */}
+          <div className="order-first md:order-2 divide-y-2 ">
+            <div className="bg-[#FFCC85] px-4 py-2 text-[#000] rounded-t-md">
+              <div className="flex">
+                <h1
+                  className="text-white md:text-black md:mx-left mx-auto md:cursor-default cursor-pointer"
+                  onClick={() => toggleClass()}
+                >
+                  PARTICIPANTS
+                </h1>
+              </div>
+            </div>
+            <div className="bg-[#fff] participant h-0 md:h-max md:p-2 overflow-hidden rounded-b-md space-y-2">
+              {room.users &&
+                room.users.map((username, id) => (
+                  // <Link to={"/profile/" + username} className="text-[#5E39C4] ">
+                  <div key={id} className="flex items-center gap-2 px-2 py-2">
+                    <CgProfile size={30} color={"#000"} />
+                    <Link
+                      to={"/profile/" + username}
+                      style={{ color: "#44288F" }}
+                    >
+                      @{username}
+                    </Link>
+                  </div>
+                  // </Link>
+                ))}
             </div>
           </div>
-          <div className="bg-[#fff] participant h-0 md:h-max md:p-2 overflow-hidden rounded-b-md space-y-2">
-            {room.users &&
-              room.users.map((username, id) => (
-                // <Link to={"/profile/" + username} className="text-[#5E39C4] ">
-                <div key={id} className="flex items-center gap-2 px-2 py-2">
-                  <CgProfile size={30} color={"#000"} />
-                  <Link
-                    to={"/profile/" + username}
-                    style={{ color: "#44288F" }}
-                  >
-                    @{username}
-                  </Link>
-                </div>
-                // </Link>
-              ))}
-          </div>
+          <KeyForm />
         </div>
       </div>
     </div>

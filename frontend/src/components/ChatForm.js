@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import ReaderFile from "./ReaderFile.js";
 import { downloadFile } from "../utils/downloadFile.js";
-import RSA from "../utils/RSA";  
+import RSA from "../utils/RSA";
 
 function ChatForm({ room, isJoined, socket }) {
   const [pesan, setPesan] = useState("");
@@ -9,7 +9,6 @@ function ChatForm({ room, isJoined, socket }) {
   const [fileName, setFileName] = useState("");
   const [rsa, setRsa] = useState(null);
   const [publicKey, setPublicKey] = useState("");
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -30,7 +29,7 @@ function ChatForm({ room, isJoined, socket }) {
     const newRsa = new RSA(); // This will automatically generate keys
     setRsa(newRsa);
     setPublicKey(`e: ${newRsa.publicKey.e}, n: ${newRsa.publicKey.n}`);
-};
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -72,21 +71,21 @@ function ChatForm({ room, isJoined, socket }) {
         />
       </form>
       <div className="flex text-xs md:text-base text-[#fff] gap-2 w-full">
-        <button className="w-1/4 bg-[#44288F] px-4 py-2 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA]"
-        onClick={initializeRSA}>
+        <button
+          className="w-1/4 bg-[#44288F] px-4 py-2 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA]"
+          onClick={initializeRSA}
+        >
           Generate Public Key
         </button>
-        <div className="w-3/4 bg-[#44288F] px-4 py-2 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA]">
-        Public Key: {publicKey}
+        <div className="w-3/4 border border-[#44288F] px-4 py-2 rounded-md text-[#000]">
+          Public Key: {publicKey}
         </div>
       </div>
       <div className="flex text-xs md:text-base text-[#fff] gap-2 w-full">
-        <button className="w-full bg-[#44288F] px-4 py-2 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA]"
-        >
+        <button className="w-full bg-[#44288F] px-4 py-2 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA]">
           Send Public Key
         </button>
       </div>
-
     </div>
   );
 }

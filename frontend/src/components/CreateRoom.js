@@ -11,13 +11,18 @@ function CreateRoom() {
     e.preventDefault();
     if (topic.toLowerCase() !== "all") {
       axios
-        .post(process.env.REACT_APP_API_URL + "/create-room", {
-          topic: topic,
-          name: name,
-          type: "Group",
-          description: description,
-          users: [JSON.parse(localStorage.getItem("user")).username],
-        })
+        .post(
+          (process.env.NODE_ENV === "development"
+            ? "http://localhost:4000"
+            : process.env.REACT_APP_API_URL) + "/create-room",
+          {
+            topic: topic,
+            name: name,
+            type: "Group",
+            description: description,
+            users: [JSON.parse(localStorage.getItem("user")).username],
+          }
+        )
         .then((res) => window.location.reload())
         .then((err) => console.log(err));
     } else {

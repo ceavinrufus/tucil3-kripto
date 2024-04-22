@@ -16,7 +16,11 @@ const Profile = () => {
     if (username) {
       // console.log(username);
       axios
-        .get(process.env.REACT_APP_API_URL + `/get-user/?username=${username}`)
+        .get(
+          (process.env.NODE_ENV === "development"
+            ? "http://localhost:4000"
+            : process.env.REACT_APP_API_URL) + `/get-user/?username=${username}`
+        )
         .then((res) => {
           // console.log(res);
           setUser(res.data);
@@ -28,7 +32,9 @@ const Profile = () => {
   useEffect(() => {
     axios
       .get(
-        process.env.REACT_APP_API_URL +
+        (process.env.NODE_ENV === "development"
+          ? "http://localhost:4000"
+          : process.env.REACT_APP_API_URL) +
           `/get-rooms-by-host/?hostname=${username}`
       )
       .then((res) => {
@@ -55,13 +61,18 @@ const Profile = () => {
   const handleStart = (e) => {
     e.preventDefault();
     axios
-      .post(process.env.REACT_APP_API_URL + "/create-room", {
-        topic: "",
-        name: "",
-        type: "Personal",
-        description: "",
-        users: [JSON.parse(localStorage.getItem("user")).username, username],
-      })
+      .post(
+        (process.env.NODE_ENV === "development"
+          ? "http://localhost:4000"
+          : process.env.REACT_APP_API_URL) + "/create-room",
+        {
+          topic: "",
+          name: "",
+          type: "Personal",
+          description: "",
+          users: [JSON.parse(localStorage.getItem("user")).username, username],
+        }
+      )
       .then((res) => window.location.reload())
       .then((err) => console.log(err));
   };

@@ -14,11 +14,18 @@ const Register = () => {
 
     if (password.length >= 8) {
       axios
-        .post(`${process.env.REACT_APP_API_URL}/register`, {
-          name,
-          username,
-          password,
-        })
+        .post(
+          `${
+            process.env.NODE_ENV === "development"
+              ? "http://localhost:4000"
+              : process.env.REACT_APP_API_URL
+          }/register`,
+          {
+            name,
+            username,
+            password,
+          }
+        )
         .then((res) => {
           localStorage.setItem("user", JSON.stringify(res.data));
           navigate("/");

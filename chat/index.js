@@ -35,13 +35,18 @@ io.on("connection", (socket) => {
   socket.on("send-message", (message, attachment, room, sender) => {
     const time = new Date().toString();
     axios
-      .post(process.env.REACT_APP_API_URL + "/create-pesan", {
-        pesan: message,
-        attachment: attachment,
-        sender: sender,
-        roomId: room,
-        date: time.substring(4, 24),
-      })
+      .post(
+        (process.env.NODE_ENV === "development"
+          ? "http://localhost:4000"
+          : process.env.REACT_APP_API_URL) + "/create-pesan",
+        {
+          pesan: message,
+          attachment: attachment,
+          sender: sender,
+          roomId: room,
+          date: time.substring(4, 24),
+        }
+      )
       .then((res) => {
         io.to(room).emit("receive-message", res.data);
       })

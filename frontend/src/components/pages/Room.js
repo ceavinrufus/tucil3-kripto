@@ -35,7 +35,11 @@ const Room = ({ user }) => {
     if (room.users) {
       socket.emit("join-room", room._id);
       axios
-        .get(process.env.REACT_APP_API_URL + `/get-pesan/?room=${room._id}`)
+        .get(
+          (process.env.NODE_ENV === "development"
+            ? "http://localhost:4000"
+            : process.env.REACT_APP_API_URL) + `/get-pesan/?room=${room._id}`
+        )
         .then((res) => setPesans(res.data))
         .catch((err) => console.log(err));
     }
@@ -52,10 +56,15 @@ const Room = ({ user }) => {
 
     if (user) {
       axios
-        .post(process.env.REACT_APP_API_URL + "/update-room", {
-          _id: room._id,
-          users: [...room.users, user.username],
-        })
+        .post(
+          (process.env.NODE_ENV === "development"
+            ? "http://localhost:4000"
+            : process.env.REACT_APP_API_URL) + "/update-room",
+          {
+            _id: room._id,
+            users: [...room.users, user.username],
+          }
+        )
         .then((res) => {
           setRoom(res.data);
         })
@@ -68,10 +77,15 @@ const Room = ({ user }) => {
 
     if (user) {
       axios
-        .post(process.env.REACT_APP_API_URL + "/update-room", {
-          _id: room._id,
-          users: room.users.filter((username) => username !== user.username),
-        })
+        .post(
+          (process.env.NODE_ENV === "development"
+            ? "http://localhost:4000"
+            : process.env.REACT_APP_API_URL) + "/update-room",
+          {
+            _id: room._id,
+            users: room.users.filter((username) => username !== user.username),
+          }
+        )
         .then((res) => {
           setRoom(res.data);
         })
@@ -84,9 +98,14 @@ const Room = ({ user }) => {
 
     if (user && room) {
       axios
-        .delete(process.env.REACT_APP_API_URL + "/delete-room", {
-          data: { _id: room._id },
-        })
+        .delete(
+          (process.env.NODE_ENV === "development"
+            ? "http://localhost:4000"
+            : process.env.REACT_APP_API_URL) + "/delete-room",
+          {
+            data: { _id: room._id },
+          }
+        )
         .then((res) => {
           if (res.status === 200) {
             setRoom(null);

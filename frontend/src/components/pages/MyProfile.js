@@ -17,7 +17,9 @@ const MyProfile = () => {
       // console.log(location.state);
       axios
         .get(
-          process.env.REACT_APP_API_URL +
+          (process.env.NODE_ENV === "development"
+            ? "http://localhost:4000"
+            : process.env.REACT_APP_API_URL) +
             `/get-user/?username=${location.state.username}`
         )
         .then((res) => {
@@ -26,19 +28,21 @@ const MyProfile = () => {
         })
         .catch((err) => console.log(err));
     }
-  }, []);
+  }, [location.state]);
 
   useEffect(() => {
     axios
       .get(
-        process.env.REACT_APP_API_URL +
+        (process.env.NODE_ENV === "development"
+          ? "http://localhost:4000"
+          : process.env.REACT_APP_API_URL) +
           `/get-rooms-by-host/?hostname=${location.state.username}`
       )
       .then((res) => {
         setRooms(res.data.reverse());
       })
       .catch((err) => console.log(err));
-  }, []);
+  }, [location.state.username]);
 
   // useEffect(() => {
   //   setUsedRooms(rooms);

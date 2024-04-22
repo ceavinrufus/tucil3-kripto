@@ -2,7 +2,7 @@ import React from "react";
 import { CgProfile } from "react-icons/cg";
 import { Link } from "react-router-dom";
 import { downloadFile } from "../utils/downloadFile";
-import { base64ToArrayBuffer } from "../utils/converter";
+import { bufferToUint8Array } from "../utils/converter";
 
 const BubbleChat = ({ bubble }) => {
   const username = JSON.parse(localStorage.getItem("user")).username;
@@ -56,7 +56,7 @@ const BubbleChat = ({ bubble }) => {
               }`}
               onClick={() =>
                 downloadFile(
-                  base64ToArrayBuffer(bubble.attachment?.content),
+                  bufferToUint8Array(bubble.attachment?.content),
                   bubble.attachment?.name
                 )
               }

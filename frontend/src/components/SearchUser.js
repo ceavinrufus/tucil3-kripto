@@ -20,7 +20,11 @@ const SearchUser = () => {
     // Set a new timeout
     timeoutId = setTimeout(() => {
       axios
-        .get(process.env.REACT_APP_API_URL + `/get-user/?username=${search}`)
+        .get(
+          (process.env.NODE_ENV === "development"
+            ? "http://localhost:4000"
+            : process.env.REACT_APP_API_URL) + `/get-user/?username=${search}`
+        )
         .then((res) => {
           // console.log(res);
           setUser(res.data);

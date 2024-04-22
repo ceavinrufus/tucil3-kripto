@@ -14,13 +14,18 @@ const EditProfile = ({ user }) => {
     e.preventDefault();
 
     axios
-      .post(process.env.REACT_APP_API_URL + "/edit-profile", {
-        _id: user._id,
-        name,
-        old_username: user.username,
-        new_username: username,
-        bio,
-      })
+      .post(
+        (process.env.NODE_ENV === "development"
+          ? "http://localhost:4000"
+          : process.env.REACT_APP_API_URL) + "/edit-profile",
+        {
+          _id: user._id,
+          name,
+          old_username: user.username,
+          new_username: username,
+          bio,
+        }
+      )
       .then((res) => {
         localStorage.setItem("user", JSON.stringify(res.data));
         navigate(`/profile/${username}`);

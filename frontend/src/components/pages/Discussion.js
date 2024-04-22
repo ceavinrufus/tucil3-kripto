@@ -29,7 +29,11 @@ const Discussion = () => {
 
   useEffect(() => {
     axios
-      .get(process.env.REACT_APP_API_URL + "/get-rooms")
+      .get(
+        (process.env.NODE_ENV === "development"
+          ? "http://localhost:4000"
+          : process.env.REACT_APP_API_URL) + "/get-rooms"
+      )
       .then((res) => {
         // Nanti mau dibikin pagination gitu buat roomnya
         setRooms(res.data.reverse());

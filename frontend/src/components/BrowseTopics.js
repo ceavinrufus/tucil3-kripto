@@ -7,7 +7,11 @@ const BrowseTopics = ({ changeRoom, rooms }) => {
 
   useEffect(() => {
     axios
-      .get(process.env.REACT_APP_API_URL + "/get-topics")
+      .get(
+        (process.env.NODE_ENV === "development"
+          ? "http://localhost:4000"
+          : process.env.REACT_APP_API_URL) + "/get-topics"
+      )
       .then((res) => setTopics(res.data))
       .catch((err) => console.log(err));
   }, []);

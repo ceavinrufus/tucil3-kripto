@@ -20,6 +20,7 @@ const Room = ({ user }) => {
   const [room, setRoom] = useState({});
   const [pesans, setPesans] = useState([]);
   const messagesEndRef = useRef(null);
+  const [encryptKey, setEncryptKey] = useState();
 
   // const bubbles = messages.filter(function (el) {
   //   return el.roomId === parseInt(roomId);
@@ -170,7 +171,7 @@ const Room = ({ user }) => {
 
       <div className="flex flex-col order-2 md:order-first md:flex-row gap-8 text-[#fff]">
         {/* Chat */}
-        <div className="flex-grow bg-[#fff] rounded-xl text-[#000] h-[600px] md:w-1/2">
+        <div className="flex-grow bg-[#fff] rounded-xl text-[#000] h-[650px] md:w-1/2">
           <div className="p-4 md:p-8 flex flex-col justify-between h-[100%] gap-4 divide-y-2">
             <div className="space-y-1 md:space-y-2 overflow-y-auto ">
               {pesans.map((bubble, id) => (
@@ -178,24 +179,29 @@ const Room = ({ user }) => {
               ))}
               <div ref={messagesEndRef} />
             </div>
-            <ChatForm room={room} isJoined={isJoined} socket={socket} />
+            <ChatForm
+              room={room}
+              isJoined={isJoined}
+              socket={socket}
+              encryptKey={encryptKey}
+            />
           </div>
         </div>
 
         <div className="h-3/5 flex-1 flex flex-col-reverse gap-5">
           {/* Participants */}
-          <div className="order-first md:order-2 divide-y-2 ">
-            <div className="bg-[#FFCC85] px-4 py-2 text-[#000] rounded-t-md">
+          <div className="order-2 md:order-2  ">
+            <div className="bg-[#44288F] px-4 py-2 text-[#000] ">
               <div className="flex">
                 <h1
-                  className="text-white md:text-black md:mx-left mx-auto md:cursor-default cursor-pointer"
+                  className="text-white md:mx-left mx-auto md:cursor-default cursor-pointer text-sm md:text-base"
                   onClick={() => toggleClass()}
                 >
                   PARTICIPANTS
                 </h1>
               </div>
             </div>
-            <div className="bg-[#fff] participant h-0 md:h-max md:p-2 overflow-hidden rounded-b-md space-y-2">
+            <div className="bg-[#fff] participant h-0 md:h-max md:p-2 overflow-hidden space-y-2">
               {room.users &&
                 room.users.map((username, id) => (
                   // <Link to={"/profile/" + username} className="text-[#5E39C4] ">
@@ -212,7 +218,12 @@ const Room = ({ user }) => {
                 ))}
             </div>
           </div>
-          <KeyForm />
+          <KeyForm
+            room={room}
+            socket={socket}
+            encryptKey={encryptKey}
+            setEncryptKey={setEncryptKey}
+          />
         </div>
       </div>
     </div>

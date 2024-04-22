@@ -1,15 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import RSA from "../utils/RSA";
 import axios from "axios";
+import ReaderFile from "./ReaderFile";
+import ReaderTxt from "./ReaderTxt";
 
-function KeyForm({ room, socket }) {
+function KeyForm({ room, socket, encryptKey, setEncryptKey }) {
   const [publicKey, setPublicKey] = useState(
     JSON.parse(localStorage.getItem("user")).publicKey
   );
   const [privateKey, setPrivateKey] = useState(
     JSON.parse(localStorage.getItem("user")).privateKey
   );
-  const [showDownloadBtn, setShowDownloadBtn] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -43,7 +44,7 @@ function KeyForm({ room, socket }) {
   const sendPublicKey = (e) => {
     e.preventDefault();
 
-    const file = new Blob([publicKey], { type: "text/plain" });
+    const file = new Blob([JSON.stringify(publicKey)], { type: "text/plain" });
     if (file) {
       socket.emit(
         "send-message",
@@ -58,27 +59,28 @@ function KeyForm({ room, socket }) {
 
   const downloadPrivateKey = () => {
     const element = document.createElement("a");
-    const file = new Blob([privateKey], { type: "text/plain" });
+    const file = new Blob([JSON.stringify(privateKey)], { type: "text/plain" });
     element.href = URL.createObjectURL(file);
     element.download = "privateKey.pri";
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
   };
+
+  const downloadPublicKey = () => {
+    const element = document.createElement("a");
+    const file = new Blob([JSON.stringify(publicKey)], { type: "text/plain" });
+    element.href = URL.createObjectURL(file);
+    element.download = "publicKey.pri";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col text-xs md:text-base text-[#fff] gap-2 w-full">
-        <div className="w-full border border-[#44288F] px-4 py-2 rounded-md text-[#000]">
-          {privateKey ? (
-            <>
-              <p>Your Private Key:</p>
-              <p>d: {privateKey.d}</p>
-              <p>n: {privateKey.n}</p>
-            </>
-          ) : (
-            <>You haven't generated a private key yet</>
-          )}
-        </div>
+      <div className="border border-[#44288F]"></div>
+      <div className="flex text-xs md:text-base text-[#fff] gap-2 w-full">
         <div className="w-full border border-[#44288F] px-4 py-2 rounded-md text-[#000]">
           {publicKey ? (
             <>
@@ -90,9 +92,20 @@ function KeyForm({ room, socket }) {
             <>You haven't generated a public key yet</>
           )}
         </div>
+        <div className="w-full border border-[#44288F] px-4 py-2 rounded-md text-[#000]">
+          {privateKey ? (
+            <>
+              <p>Your Private Key:</p>
+              <p>d: {privateKey.d}</p>
+              <p>n: {privateKey.n}</p>
+            </>
+          ) : (
+            <>You haven't generated a private key yet</>
+          )}
+        </div>
       </div>
-      {/* <div className="flex text-xs md:text-base text-[#fff] gap-2 w-full">
-        {showDownloadBtn && (
+      <div className="flex text-xs md:text-base text-[#fff] gap-2 w-full">
+        {publicKey && (
           <button
             className="bg-[#44288F] px-4 py-2 rounded-md w-1/2"
             onClick={downloadPublicKey}
@@ -100,7 +113,7 @@ function KeyForm({ room, socket }) {
             Download Public Key
           </button>
         )}
-        {showDownloadBtn && (
+        {privateKey && (
           <button
             className="bg-[#44288F] px-4 py-2 rounded-md w-1/2"
             onClick={downloadPrivateKey}
@@ -108,7 +121,7 @@ function KeyForm({ room, socket }) {
             Download Private Key
           </button>
         )}
-      </div> */}
+      </div>
       <div className="flex flex-col text-xs md:text-base text-[#fff] gap-2 w-full">
         <button
           disabled={publicKey && privateKey}
@@ -123,6 +136,28 @@ function KeyForm({ room, socket }) {
         >
           Send Public Key
         </button>
+      </div>
+      <div className="border border-[#44288F]"></div>
+      <div
+        className={`${
+          encryptKey ? "flex-col-reverse" : "flex-col"
+        } flex text-black gap-2`}
+      >
+        {encryptKey ? (
+          <div
+            div
+            className="w-full border border-[#44288F] px-4 py-2 rounded-md text-[#000] text-xs md:text-base"
+          >
+            <p>Their Public Key:</p>
+            <p>e: {JSON.parse(encryptKey).e}</p>
+            <p>n: {JSON.parse(encryptKey).n}</p>
+          </div>
+        ) : (
+          <>Upload their public key to start the conversation!</>
+        )}
+        <div className="border p-2 rounded-md border-[#44288F]">
+          <ReaderTxt setContent={setEncryptKey} />
+        </div>
       </div>
     </div>
   );

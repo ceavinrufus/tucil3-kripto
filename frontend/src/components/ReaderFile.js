@@ -1,6 +1,6 @@
 import { RiAttachment2 } from "react-icons/ri";
 
-function ReaderFile({ setFile, setFileName }) {
+function ReaderFile({ disabled, setFile, setFileName }) {
   function onChange(event) {
     var file = event.target.files[0];
     if (!file) return; // Ensure a file is selected
@@ -26,12 +26,18 @@ function ReaderFile({ setFile, setFileName }) {
 
   return (
     <div className="input-group">
-      <label htmlFor="fileUpload" className="flex items-center justify-center">
-        <RiAttachment2 className="text-2xl cursor-pointer" />
+      <label
+        htmlFor="fileUpload"
+        className={`flex items-center justify-center ${
+          disabled ? "cursor-not-allowed" : "cursor-pointer"
+        }`}
+      >
+        <RiAttachment2 className="text-2xl " />
       </label>
       <input
+        disabled={disabled}
         id="fileUpload"
-        className="hidden"
+        className="hidden disabled:cursor-not-allowed"
         onClick={(e) => (e.target.value = null)}
         onChange={(e) => onChange(e)}
         type="file"

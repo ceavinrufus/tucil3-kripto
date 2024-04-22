@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useState } from "react";
 import ReaderFile from "./ReaderFile.js";
 import { downloadFile } from "../utils/downloadFile.js";
-import KeyForm from "./KeyForm.js";
 
-function ChatForm({ room, isJoined, socket }) {
+function ChatForm({ room, isJoined, socket, encryptKey }) {
   const [pesan, setPesan] = useState("");
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState("");
@@ -40,16 +39,22 @@ function ChatForm({ room, isJoined, socket }) {
         onSubmit={handleSubmit}
         className="flex items-center gap-2 w-full"
       >
-        <ReaderFile setFile={setFile} setFileName={setFileName} />
+        <ReaderFile
+          disabled={!isJoined || !encryptKey}
+          setFile={setFile}
+          setFileName={setFileName}
+        />
         <input
           className={
             "bg-[#FFCC85] w-full px-4 py-2 rounded-md placeholder-[#000] disabled:cursor-not-allowed text-xs md:text-base"
           }
           type="text"
-          disabled={!isJoined}
+          disabled={!isJoined || !encryptKey}
           placeholder={
             isJoined
-              ? "Write your message here"
+              ? encryptKey
+                ? "Write your message here"
+                : "You need to have their public key first"
               : "You must join the room first"
           }
           value={pesan}
@@ -60,7 +65,7 @@ function ChatForm({ room, isJoined, socket }) {
           className={
             "bg-[#44288F] text-[#fff] px-4 py-2 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA] text-xs md:text-base"
           }
-          disabled={!isJoined}
+          disabled={!isJoined || !encryptKey}
           value={"Encrypt & Send"}
         />
       </form>

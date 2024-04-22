@@ -2,15 +2,13 @@ import React, { useState, useEffect } from "react";
 import { CgProfile } from "react-icons/cg";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
-import RoomsCard from "../RoomsCard";
-import Pagination from "../Pagination";
+import { GrClose } from "react-icons/gr";
+import CreateRoom from "../CreateRoom";
 
 const Profile = () => {
   const { username } = useParams();
   const [user, setUser] = useState({});
-  const [rooms, setRooms] = useState([]);
-  // const [usedRooms, setUsedRooms] = useState([]);
-  const [increment, setIncrement] = useState(1);
+  const [modal, setModal] = useState(false);
 
   useEffect(() => {
     if (username) {
@@ -29,56 +27,31 @@ const Profile = () => {
     }
   }, [username]);
 
-  useEffect(() => {
-    axios
-      .get(
-        (process.env.NODE_ENV === "development"
-          ? "http://localhost:4000"
-          : process.env.REACT_APP_API_URL) +
-          `/get-rooms-by-host/?hostname=${username}`
-      )
-      .then((res) => {
-        setRooms(res.data.reverse());
-      })
-      .catch((err) => console.log(err));
-  }, [username]);
-
-  // useEffect(() => {
-  //   setUsedRooms(rooms);
-  // }, [rooms]);
-
-  const nextPage = () => {
-    if (increment < Math.ceil(rooms.length / 3)) {
-      setIncrement(increment + 1);
-    }
-  };
-  const previousPage = () => {
-    if (increment > 1) {
-      setIncrement(increment - 1);
-    }
-  };
-
-  const handleStart = (e) => {
-    e.preventDefault();
-    axios
-      .post(
-        (process.env.NODE_ENV === "development"
-          ? "http://localhost:4000"
-          : process.env.REACT_APP_API_URL) + "/create-room",
-        {
-          topic: "",
-          name: "",
-          type: "Personal",
-          description: "",
-          users: [JSON.parse(localStorage.getItem("user")).username, username],
-        }
-      )
-      .then((res) => window.location.reload())
-      .then((err) => console.log(err));
+  const toggleModal = () => {
+    setModal(!modal);
   };
 
   return (
     <>
+      {modal && (
+        <div className="fixed min-h-screen w-screen">
+          <div
+            className="fixed w-full h-full p-0 bg-black/[0.6]"
+            onClick={toggleModal}
+          ></div>
+          <div className="fixed top-1/2 left-1/2 z-50 bg-[#fff] rounded-xl w-[350px] sm:w-1/2 -translate-y-1/2 -translate-x-1/2">
+            <div className="bg-[#FFCC85] p-5 rounded-t-xl text-xl">
+              <h1 className="flex items-center justify-between font-bold">
+                Create Room{" "}
+                <button onClick={toggleModal}>
+                  <GrClose />
+                </button>
+              </h1>
+            </div>
+            <CreateRoom withUsername={username} />
+          </div>
+        </div>
+      )}
       <div className="bg-[#F58F00] min-h-screen py-8 px-12 flex flex-col items-center">
         <div className="grid grid-row justify-center gap-1">
           {/*Pura-pura aja dulu ini dpnya*/}
@@ -86,10 +59,12 @@ const Profile = () => {
             <CgProfile size={150} color={"#000"} />
           </div>
           <p className="text-center text-3xl font-bold">{user && user.name}</p>
-          <p className="text-center text-xl">@{user && user.username}</p>
+          <p className="text-center text-xl text-[#5E39C4]">
+            @{user && user.username}
+          </p>
           <div className="flex flex-col justify-center space-y-2 my-4">
             <button
-              onClick={handleStart}
+              onClick={toggleModal}
               className="rounded-full px-4 py-2 bg-[#5E39C4] hover:bg-[#9881DA] text-[#fff] transition duration-200"
             >
               Start a Chat
@@ -113,28 +88,6 @@ const Profile = () => {
                 <p className="mb-5 text-[#ffffff]">{user.bio}</p>
               ))}
             {/* </div> */}
-          </div>
-          <div className="text-[#fff]">
-            <div className="flex items-center justify-between mb-2">
-              <h1 className="font-bold">
-                {rooms.length} {rooms.length > 1 ? "ROOMS" : "ROOM"} HOSTED BY{" "}
-                {user && user.username}
-              </h1>
-              {rooms.length > 3 && (
-                <h1>
-                  <Pagination
-                    increment={increment}
-                    nextPage={nextPage}
-                    previousPage={previousPage}
-                  />
-                </h1>
-              )}
-            </div>
-            <div className="">
-              {rooms.slice((increment - 1) * 3, increment * 3).map((room) => (
-                <RoomsCard room={room} />
-              ))}
-            </div>
           </div>
         </div>
       </div>

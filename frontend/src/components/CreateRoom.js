@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { TextField } from "@mui/material";
 import axios from "axios";
 
-function CreateRoom() {
+function CreateRoom({ withUsername }) {
   const [topic, setTopic] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -18,9 +18,12 @@ function CreateRoom() {
           {
             topic: topic,
             name: name,
-            type: "Group",
+            type: "Personal",
             description: description,
-            users: [JSON.parse(localStorage.getItem("user")).username],
+            users: [
+              JSON.parse(localStorage.getItem("user")).username,
+              withUsername,
+            ],
           }
         )
         .then((res) => window.location.reload())
@@ -29,6 +32,29 @@ function CreateRoom() {
       alert("Wrong input!");
     }
   };
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   if (topic.toLowerCase() !== "all") {
+  //     axios
+  //       .post(
+  //         (process.env.NODE_ENV === "development"
+  //           ? "http://localhost:4000"
+  //           : process.env.REACT_APP_API_URL) + "/create-room",
+  //         {
+  //           topic: topic,
+  //           name: name,
+  //           type: "Group",
+  //           description: description,
+  //           users: [JSON.parse(localStorage.getItem("user")).username],
+  //         }
+  //       )
+  //       .then((res) => window.location.reload())
+  //       .then((err) => console.log(err));
+  //   } else {
+  //     alert("Wrong input!");
+  //   }
+  // };
 
   return (
     <div className="p-5">

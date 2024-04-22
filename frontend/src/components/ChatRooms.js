@@ -3,7 +3,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import RoomsCard from "./RoomsCard";
 import Pagination from "./Pagination";
 
-const ChatRooms = ({ onClick, rooms, increment, setIncrement }) => {
+const ChatRooms = ({ rooms, increment, setIncrement }) => {
   const nextPage = () => {
     if (increment < Math.ceil(rooms.length / 5)) {
       setIncrement(increment + 1);
@@ -30,7 +30,7 @@ const ChatRooms = ({ onClick, rooms, increment, setIncrement }) => {
             nextPage={nextPage}
             previousPage={previousPage}
           />
-          <div className="flex">
+          {/* <div className="flex">
             <button
               className="flex items-center rounded-lg px-4 py-2 bg-[#5E39C4] hover:bg-[#9881DA] transition duration-200 shadow-md"
               onClick={onClick}
@@ -39,12 +39,15 @@ const ChatRooms = ({ onClick, rooms, increment, setIncrement }) => {
                 <AiOutlinePlus /> Create Room
               </div>
             </button>
-          </div>
+          </div> */}
         </div>
         <div className="">
-          {rooms.slice((increment - 1) * 5, increment * 5).map((room, id) => (
-            <RoomsCard username={username} room={room} key={id} />
-          ))}
+          {rooms
+            .filter((room) => room.users.includes(username))
+            .slice((increment - 1) * 5, increment * 5)
+            .map((room, id) => (
+              <RoomsCard username={username} room={room} key={id} />
+            ))}
         </div>
       </div>
       <div className="mt-4"></div>

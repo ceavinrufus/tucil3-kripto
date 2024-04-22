@@ -31,10 +31,10 @@ const Room = ({ user }) => {
   }, [location.state]);
 
   useEffect(() => {
-    if (room.users) {
+    if (room?.users) {
       setIsJoined(room.users.includes(user.username));
     }
-    if (room.users) {
+    if (room?.users) {
       socket.emit("join-room", room._id);
       axios
         .get(
@@ -131,12 +131,12 @@ const Room = ({ user }) => {
       {/* Room Header */}
       <div className="flex items-center justify-between my-5 text-[#fff] ">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold">{room.name && room.name}</h1>
-          <h1 className="text-xl">{room.description && room.description}</h1>
+          <h1 className="text-2xl font-bold">{room?.name && room.name}</h1>
+          <h1 className="text-xl">{room?.description && room.description}</h1>
         </div>
 
         <div className="flex gap-2">
-          {room.users ? (
+          {room?.users ? (
             room.users[0] === user.username && (
               <button
                 onClick={handleDeleteRoom}
@@ -161,7 +161,7 @@ const Room = ({ user }) => {
       <div className="flex items-center text-[#fff] mb-2">
         <p>
           HOST:{" "}
-          {room.users && (
+          {room?.users && (
             <Link to={"/profile/" + room.users[0]} className="text-[#44288F]">
               @{room.users[0]}
             </Link>
@@ -206,7 +206,7 @@ const Room = ({ user }) => {
               </div>
             </div>
             <div className="bg-[#fff] participant h-0 md:h-max md:p-2 overflow-hidden space-y-2">
-              {room.users &&
+              {room?.users &&
                 room.users.map((username, id) => (
                   // <Link to={"/profile/" + username} className="text-[#5E39C4] ">
                   <div key={id} className="flex items-center gap-2 px-2 py-2">

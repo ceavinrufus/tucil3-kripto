@@ -57,11 +57,30 @@ const BubbleChat = ({ bubble, privateKey }) => {
               >
                 <div className="flex flex-col">
                   <div className={`flex gap-2 overflow-x-auto`}>
-                    {!bubble.isSystemMessage ? (
-                      <p className={`break-all`}>{btoa(bubble.pesan)}</p>
-                    ) : (
-                      <p className={`break-all`}>{bubble.pesan}</p>
-                    )}
+                    <div className="">
+                      {!bubble.isSystemMessage ? (
+                        <p className={`break-all`}>{btoa(bubble.pesan)}</p>
+                      ) : (
+                        <p className={`break-all`}>{bubble.pesan}</p>
+                      )}
+                      {bubble.attachment?.name && (
+                        <button
+                          className={`underline text-xs text-[#44288F] text-left w-full ${
+                            bubble.sender === username && "text-right"
+                          }`}
+                          onClick={() =>
+                            downloadFile(
+                              bufferToUint8Array(bubble.attachment?.content),
+                              bubble.attachment?.name
+                            )
+                          }
+                        >
+                          {bubble.attachment?.name
+                            ? bubble.attachment?.name
+                            : ""}
+                        </button>
+                      )}
+                    </div>
 
                     {!bubble.isSystemMessage && bubble.sender !== username && (
                       <button
@@ -79,30 +98,38 @@ const BubbleChat = ({ bubble, privateKey }) => {
                 </div>
               </div>
               {!bubble.isSystemMessage && toggleDecrypt && (
-                <p
-                  className={`w-max flex ${
-                    bubble.sender === username && "flex-row-reverse"
-                  }`}
-                >
-                  {rsa.decrypt(bubble.pesan, privateKey)}
-                </p>
+                <>
+                  <p
+                    className={`w-max flex ${
+                      bubble.sender === username && "flex-row-reverse"
+                    }`}
+                  >
+                    {rsa.decrypt(bubble.pesan, privateKey)}
+                  </p>
+                  {bubble.attachment?.name && (
+                    <button
+                      className={`underline text-xs text-[#44288F] text-left w-full ${
+                        bubble.sender === username && "text-right"
+                      }`}
+                      onClick={() => {
+                        console.log(
+                          bufferToUint8Array(bubble.attachment?.content)
+                        );
+                        downloadFile(
+                          rsa.decryptFile(
+                            bufferToUint8Array(bubble.attachment?.content),
+                            privateKey
+                          ),
+                          bubble.attachment?.name
+                        );
+                      }}
+                    >
+                      {bubble.attachment?.name ? bubble.attachment?.name : ""}
+                    </button>
+                  )}
+                </>
               )}
             </>
-          )}
-          {bubble.attachment?.name && (
-            <button
-              className={`underline text-xs text-[#44288F] text-left w-full ${
-                bubble.sender === username && "text-right"
-              }`}
-              onClick={() =>
-                downloadFile(
-                  bufferToUint8Array(bubble.attachment?.content),
-                  bubble.attachment?.name
-                )
-              }
-            >
-              {bubble.attachment?.name ? bubble.attachment?.name : ""}
-            </button>
           )}
         </div>
       </div>

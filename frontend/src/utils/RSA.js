@@ -38,6 +38,19 @@ class RSA {
     return a;
   }
 
+  modPow(base, exponent, modulus) {
+    let result = 1;
+    base = base % modulus;
+    while (exponent > 0) {
+      if (exponent % 2 === 1) {
+        result = (result * base) % modulus;
+      }
+      exponent = exponent >> 1;
+      base = (base * base) % modulus;
+    }
+    return result;
+  }
+
   modInverse(a, m) {
     a = ((a % m) + m) % m;
     for (let x = 1; x < m; x++) {
@@ -63,7 +76,7 @@ class RSA {
     const encrypted = [];
     for (let i = 0; i < plaintext.length; i++) {
       const charCode = plaintext.charCodeAt(i);
-      const encryptedCharCode = BigInt(charCode) ** BigInt(e) % BigInt(n);
+      const encryptedCharCode = this.modPow(charCode, e, n);
       encrypted.push(encryptedCharCode.toString());
     }
     return encrypted.join(" ");
@@ -73,8 +86,8 @@ class RSA {
     let encrypted = new Uint8Array(plainfile.length);
     for (let i = 0; i < plainfile.length; i++) {
       const code = plainfile[i];
-      const encryptedCode = BigInt(code) ** BigInt(e) % BigInt(n);
-      encrypted[i] = encryptedCode;
+      const encryptedCode = this.modPow(code, e, n);
+      encrypted[i] = Number(encryptedCode);
     }
     return encrypted;
   }
@@ -83,8 +96,8 @@ class RSA {
     const decrypted = [];
     const encryptedCodes = ciphertext.split(" ");
     for (let i = 0; i < encryptedCodes.length; i++) {
-      const encryptedCharCode = BigInt(encryptedCodes[i]);
-      const decryptedCharCode = encryptedCharCode ** BigInt(d) % BigInt(n);
+      const encryptedCharCode = encryptedCodes[i];
+      const decryptedCharCode = this.modPow(encryptedCharCode, d, n);
       decrypted.push(String.fromCharCode(Number(decryptedCharCode)));
     }
     return decrypted.join("");
@@ -93,10 +106,9 @@ class RSA {
   decryptFile(cipherfile, privateKey) {
     const { d, n } = privateKey;
     let decrypted = new Uint8Array(cipherfile.length);
-    const encryptedCodes = cipherfile.split(" ");
-    for (let i = 0; i < encryptedCodes.length; i++) {
-      const encryptedCode = BigInt(encryptedCodes[i]);
-      const decryptedCode = encryptedCode ** BigInt(d) % BigInt(n);
+    for (let i = 0; i < cipherfile.length; i++) {
+      const encryptedCode = cipherfile[i];
+      const decryptedCode = this.modPow(encryptedCode, d, n);
       decrypted[i] = Number(decryptedCode);
     }
     return decrypted;

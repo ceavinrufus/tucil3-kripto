@@ -52,16 +52,15 @@ const BubbleChat = ({ bubble, privateKey }) => {
             <>
               <div
                 className={` ${
-                  bubble.sender === username &&
-                  "w-full flex justify-end items-center"
+                  bubble.sender === username && "flex justify-end items-center"
                 }`}
               >
-                <div className="w-max flex flex-col">
-                  <div className={`flex gap-2 `}>
+                <div className="flex flex-col">
+                  <div className={`flex gap-2 overflow-x-auto`}>
                     {!bubble.isSystemMessage ? (
-                      <p className={``}>{btoa(bubble.pesan)}</p>
+                      <p className={`break-all`}>{btoa(bubble.pesan)}</p>
                     ) : (
-                      <p className={``}>{bubble.pesan}</p>
+                      <p className={`break-all`}>{bubble.pesan}</p>
                     )}
 
                     {!bubble.isSystemMessage && bubble.sender !== username && (
@@ -73,6 +72,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
                       </button>
                     )}
                   </div>
+                  {/* Border */}
                   {!bubble.isSystemMessage && toggleDecrypt && (
                     <p className="border my-1 border-b-[#44288F]"></p>
                   )}

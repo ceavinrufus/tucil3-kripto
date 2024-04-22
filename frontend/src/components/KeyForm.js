@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import RSA from "../utils/RSA";
 import axios from "axios";
 import ReaderFile from "./ReaderFile";
-import ReaderTxt from "./ReaderTxt";
+import ReaderKey from "./ReaderKey";
 
 function KeyForm({ room, socket, encryptKey, setEncryptKey }) {
   const [publicKey, setPublicKey] = useState(
@@ -149,14 +149,14 @@ function KeyForm({ room, socket, encryptKey, setEncryptKey }) {
             className="w-full border border-[#44288F] px-4 py-2 rounded-md text-[#000] text-xs md:text-base"
           >
             <p>Their Public Key:</p>
-            <p>e: {JSON.parse(encryptKey).e}</p>
-            <p>n: {JSON.parse(encryptKey).n}</p>
+            <p>e: {encryptKey.e}</p>
+            <p>n: {encryptKey.n}</p>
           </div>
         ) : (
           <>Upload their public key to start the conversation!</>
         )}
         <div className="border p-2 rounded-md border-[#44288F]">
-          <ReaderTxt setContent={setEncryptKey} />
+          <ReaderKey setContent={setEncryptKey} />
         </div>
       </div>
     </div>

@@ -1,19 +1,25 @@
 import React, { useState } from "react";
 import ReaderFile from "./ReaderFile.js";
 import { downloadFile } from "../utils/downloadFile.js";
+import RSA from "../utils/RSA.js";
 
 function ChatForm({ room, isJoined, socket, encryptKey }) {
   const [pesan, setPesan] = useState("");
   const [file, setFile] = useState(null);
   const [fileName, setFileName] = useState("");
 
+  const rsa = new RSA();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (pesan !== "" || file) {
       socket.emit(
         "send-message",
-        pesan,
-        { name: fileName, content: file },
+        rsa.encrypt(pesan, encryptKey),
+        {
+          name: fileName,
+          content: file ? rsa.encryptFile(file, encryptKey) : null,
+        },
         room._id,
         JSON.parse(localStorage.getItem("user")).username,
         false

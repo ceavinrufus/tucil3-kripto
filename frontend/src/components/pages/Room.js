@@ -175,7 +175,11 @@ const Room = ({ user }) => {
           <div className="p-4 md:p-8 flex flex-col justify-between h-[100%] gap-4 divide-y-2">
             <div className="space-y-1 md:space-y-2 overflow-y-auto ">
               {pesans.map((bubble, id) => (
-                <BubbleChat key={id} bubble={bubble} />
+                <BubbleChat
+                  key={id}
+                  bubble={bubble}
+                  privateKey={user.privateKey}
+                />
               ))}
               <div ref={messagesEndRef} />
             </div>

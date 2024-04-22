@@ -1,4 +1,4 @@
-function ReaderTxt({ setContent }) {
+function ReaderKey({ setContent }) {
   function onChange(event) {
     var file = event.target.files[0];
     if (!file) return; // Ensure a file is selected
@@ -9,7 +9,7 @@ function ReaderTxt({ setContent }) {
 
     reader.onload = (event) => {
       const fileContent = event.target.result;
-      setContent(fileContent);
+      setContent(JSON.parse(fileContent));
     };
 
     reader.onerror = (error) => {
@@ -30,4 +30,4 @@ function ReaderTxt({ setContent }) {
   );
 }
 
-export default ReaderTxt;
+export default ReaderKey;

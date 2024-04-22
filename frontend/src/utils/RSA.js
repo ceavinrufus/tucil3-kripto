@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 class RSA {
   constructor() {
     this.p = null;
@@ -38,31 +39,13 @@ class RSA {
   }
 
   modInverse(a, m) {
-    let m0 = m;
-    let y = 0,
-      x = 1;
-
-    if (m === 1) return 0; // No inverse if m is 1
-
-    while (a > 1) {
-      // q is quotient
-      let q = Math.floor(a / m);
-      let t = m;
-
-      // m is remainder now, same as the Euclid's algorithm
-      m = a % m;
-      a = t;
-      t = y;
-
-      // Update y and x
-      y = x - q * y;
-      x = t;
+    a = ((a % m) + m) % m;
+    for (let x = 1; x < m; x++) {
+      if ((a * x) % m === 1) {
+        return x;
+      }
     }
-
-    // Make x positive
-    if (x < 0) x += m0;
-
-    return x;
+    return 1;
   }
 
   generateKeys() {
@@ -80,45 +63,43 @@ class RSA {
     const encrypted = [];
     for (let i = 0; i < plaintext.length; i++) {
       const charCode = plaintext.charCodeAt(i);
-      const encryptedCharCode = charCode ** e % n;
+      const encryptedCharCode = BigInt(charCode) ** BigInt(e) % BigInt(n);
       encrypted.push(encryptedCharCode.toString());
     }
     return encrypted.join(" ");
   }
-
+  encryptFile(plainfile, publicKey) {
+    const { e, n } = publicKey;
+    let encrypted = new Uint8Array(plainfile.length);
+    for (let i = 0; i < plainfile.length; i++) {
+      const code = plainfile[i];
+      const encryptedCode = BigInt(code) ** BigInt(e) % BigInt(n);
+      encrypted[i] = encryptedCode;
+    }
+    return encrypted;
+  }
   decrypt(ciphertext, privateKey) {
     const { d, n } = privateKey;
     const decrypted = [];
     const encryptedCodes = ciphertext.split(" ");
     for (let i = 0; i < encryptedCodes.length; i++) {
-      const encryptedCharCode = encryptedCodes[i];
-      const decryptedCharCode = encryptedCharCode ** d % n;
+      const encryptedCharCode = BigInt(encryptedCodes[i]);
+      const decryptedCharCode = encryptedCharCode ** BigInt(d) % BigInt(n);
       decrypted.push(String.fromCharCode(Number(decryptedCharCode)));
     }
     return decrypted.join("");
   }
 
-  encryptFile(plaintext, publicKey) {
-    const { e, n } = publicKey;
-    const encrypted = [];
-    for (let i = 0; i < plaintext.length; i++) {
-      const charCode = plaintext.charCodeAt(i);
-      const encryptedCharCode = charCode ** e % n;
-      encrypted.push(encryptedCharCode.toString());
-    }
-    return encrypted.join(" ");
-  }
-
-  decryptFile(ciphertext, privateKey) {
+  decryptFile(cipherfile, privateKey) {
     const { d, n } = privateKey;
-    const decrypted = [];
-    const encryptedCodes = ciphertext.split(" ");
+    let decrypted = new Uint8Array(cipherfile.length);
+    const encryptedCodes = cipherfile.split(" ");
     for (let i = 0; i < encryptedCodes.length; i++) {
-      const encryptedCharCode = encryptedCodes[i];
-      const decryptedCharCode = encryptedCharCode ** d % n;
-      decrypted.push(String.fromCharCode(Number(decryptedCharCode)));
+      const encryptedCode = BigInt(encryptedCodes[i]);
+      const decryptedCode = encryptedCode ** BigInt(d) % BigInt(n);
+      decrypted[i] = Number(decryptedCode);
     }
-    return decrypted.join("");
+    return decrypted;
   }
 }
 
@@ -127,10 +108,10 @@ class RSA {
 // console.log("Public Key:", rsa.publicKey);
 // console.log("Private Key:", rsa.privateKey);
 
-// const plaintext = "HELLO ALICE";
-// const encrypted = rsa.encrypt(plaintext, rsa.publicKey);
+// const plaintext = "haii";
+// const encrypted = rsa.encrypt(plaintext, { e: 5, n: 564803 });
 // console.log("Encrypted Message:", encrypted);
 
-// const decrypted = rsa.decrypt(encrypted, rsa.privateKey);
+// const decrypted = rsa.decrypt(encrypted, { d: 337493, n: 564803 });
 // console.log("Decrypted Message:", decrypted);
 export default RSA;

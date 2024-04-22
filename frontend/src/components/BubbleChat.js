@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { Link } from "react-router-dom";
 import { downloadFile } from "../utils/downloadFile";
 import { bufferToUint8Array } from "../utils/converter";
+import RSA from "../utils/RSA";
 
-const BubbleChat = ({ bubble }) => {
+const BubbleChat = ({ bubble, privateKey }) => {
   const username = JSON.parse(localStorage.getItem("user")).username;
+  const [toggleDecrypt, setToggleDecrypt] = useState(false);
+
+  const rsa = new RSA();
 
   return (
     <div
@@ -45,13 +49,45 @@ const BubbleChat = ({ bubble }) => {
         </div>
         <div className="">
           {bubble.pesan && (
-            <p
-              className={`w-full flex ${
-                bubble.sender === username && "flex-row-reverse"
-              }`}
-            >
-              {bubble.pesan}
-            </p>
+            <>
+              <div
+                className={` ${
+                  bubble.sender === username &&
+                  "w-full flex justify-end items-center"
+                }`}
+              >
+                <div className="w-max flex flex-col">
+                  <div className={`flex gap-2 `}>
+                    {!bubble.isSystemMessage ? (
+                      <p className={``}>{btoa(bubble.pesan)}</p>
+                    ) : (
+                      <p className={``}>{bubble.pesan}</p>
+                    )}
+
+                    {!bubble.isSystemMessage && bubble.sender !== username && (
+                      <button
+                        onClick={() => setToggleDecrypt(!toggleDecrypt)}
+                        className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA] text-xs md:text-sm"
+                      >
+                        Decrypt
+                      </button>
+                    )}
+                  </div>
+                  {!bubble.isSystemMessage && toggleDecrypt && (
+                    <p className="border my-1 border-b-[#44288F]"></p>
+                  )}
+                </div>
+              </div>
+              {!bubble.isSystemMessage && toggleDecrypt && (
+                <p
+                  className={`w-max flex ${
+                    bubble.sender === username && "flex-row-reverse"
+                  }`}
+                >
+                  {rsa.decrypt(bubble.pesan, privateKey)}
+                </p>
+              )}
+            </>
           )}
           {bubble.attachment?.name && (
             <button

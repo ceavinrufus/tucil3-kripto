@@ -2,15 +2,10 @@ import React, { useState, useEffect } from "react";
 import { CgProfile } from "react-icons/cg";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
-import RoomsCard from "../RoomsCard";
-import Pagination from "../Pagination";
 
 const MyProfile = () => {
   const location = useLocation();
   const [user, setUser] = useState({});
-  const [rooms, setRooms] = useState([]);
-  // const [usedRooms, setUsedRooms] = useState([]);
-  const [increment, setIncrement] = useState(1);
 
   useEffect(() => {
     if (location.state) {
@@ -30,35 +25,6 @@ const MyProfile = () => {
     }
   }, [location.state]);
 
-  useEffect(() => {
-    axios
-      .get(
-        (process.env.NODE_ENV === "development"
-          ? "http://localhost:4000"
-          : process.env.REACT_APP_API_URL) +
-          `/get-rooms-by-host/?hostname=${location.state.username}`
-      )
-      .then((res) => {
-        setRooms(res.data.reverse());
-      })
-      .catch((err) => console.log(err));
-  }, [location.state.username]);
-
-  // useEffect(() => {
-  //   setUsedRooms(rooms);
-  // }, [rooms]);
-
-  const nextPage = () => {
-    if (increment < Math.ceil(rooms.length / 3)) {
-      setIncrement(increment + 1);
-    }
-  };
-  const previousPage = () => {
-    if (increment > 1) {
-      setIncrement(increment - 1);
-    }
-  };
-
   return (
     <>
       <div className="bg-[#F58F00] min-h-screen py-8 px-12 flex flex-col items-center">
@@ -68,7 +34,9 @@ const MyProfile = () => {
             <CgProfile size={150} color={"#000"} />
           </div>
           <p className="text-center text-3xl font-bold">{user && user.name}</p>
-          <p className="text-center text-xl">@{user && user.username}</p>
+          <p className="text-center text-xl text-[#5E39C4]">
+            @{user && user.username}
+          </p>
           <div className="flex flex-col justify-center space-y-2 my-4">
             <Link
               to="/editprofile"
@@ -95,27 +63,6 @@ const MyProfile = () => {
                 <p className="mb-5 text-[#ffffff]">{user.bio}</p>
               ))}
             {/* </div> */}
-          </div>
-          <div className="text-[#fff]">
-            <div className="flex items-center justify-between mb-2">
-              <h1 className="font-bold">
-                {rooms.length} {rooms.length > 1 ? "ROOMS" : "ROOM"} HOSTED
-              </h1>
-              {rooms.length > 3 && (
-                <h1>
-                  <Pagination
-                    increment={increment}
-                    nextPage={nextPage}
-                    previousPage={previousPage}
-                  />
-                </h1>
-              )}
-            </div>
-            <div className="">
-              {rooms.slice((increment - 1) * 3, increment * 3).map((room) => (
-                <RoomsCard room={room} />
-              ))}
-            </div>
           </div>
         </div>
       </div>

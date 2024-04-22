@@ -11,23 +11,24 @@ const RoomsCard = ({ username, room }) => {
         <div className="pb-2">
           {/* Room header */}
           <div className="flex items-center justify-between">
-            {room.type === "Group" ? (
-              <>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-xl font-bold">{room.name}</h1>
-                </div>
-                <div className="rounded-full bg-[#FFCC85] text-sm text-[#000] px-2 py-1 font-bold">
-                  {room.topic}
-                </div>
-              </>
+            <div className="flex items-center gap-2">
+              <h1 className="text-xl font-bold">{room.name}</h1>
+            </div>
+            <div className="rounded-full bg-[#FFCC85] text-sm text-[#000] px-2 py-1 font-bold">
+              {room.topic}
+            </div>
+            {/* {room.type === "Group" ? (
+              <></>
             ) : (
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-bold flex gap-2 items-center">
-                  <CgProfile size={50} color={"#F58F00"} />@
-                  {room.users.filter((uname) => uname !== username)[0]}
+                  <CgProfile size={50} color={"#F58F00"} />
+                  <span className="text-[#5E39C4]">
+                    @{room.users.filter((uname) => uname !== username)[0]}
+                  </span>
                 </h1>
               </div>
-            )}
+            )} */}
           </div>
 
           {/* Room description */}
@@ -42,8 +43,9 @@ const RoomsCard = ({ username, room }) => {
               <BsFillPeopleFill /> {room.users.length} joined
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <BsPersonFill /> Personal chat
+            <div className="flex items-center gap-1 text-[#5E39C4]">
+              <BsPersonFill />
+              {room.users.filter((uname) => uname !== username)[0]}
             </div>
           )}
 

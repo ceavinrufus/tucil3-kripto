@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { CgProfile } from "react-icons/cg";
 import { Link } from "react-router-dom";
+import { downloadFile } from "../utils/downloadFile";
+import { bufferToUint8Array } from "../utils/converter";
 import RSA from "../utils/RSA";
 
 const downloadText = (text, filename) => {
@@ -25,9 +27,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
   };
 
   return (
-    <div
-      className={`flex ${bubble.sender === username ? "justify-end" : "justify-start"}`}
-    >
+    <div className={`flex ${bubble.sender === username ? "justify-end" : "justify-start"}`}>
       <div className="text-sm sm:text-base p-2 sm:py-4 sm:px-8 space-y-2 w-full max-w-xs">
         <div className="flex flex-col items-start">
           <CgProfile size={30} color={"#000"} />
@@ -72,6 +72,21 @@ const BubbleChat = ({ bubble, privateKey }) => {
                 Download Decrypted
               </button>
             </>
+          )}
+          {bubble.attachment?.name && (
+            <button
+              className={`underline text-xs text-[#44288F] text-left w-full ${
+                bubble.sender === username && "text-right"
+              }`}
+              onClick={() =>
+                downloadFile(
+                  bufferToUint8Array(bubble.attachment?.content),
+                  bubble.attachment?.name
+                )
+              }
+            >
+              {bubble.attachment?.name}
+            </button>
           )}
         </div>
       </div>

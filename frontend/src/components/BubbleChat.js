@@ -27,15 +27,19 @@ const BubbleChat = ({ bubble, privateKey }) => {
   };
 
   return (
-    <div className={`flex ${bubble.sender === username ? "justify-end" : "justify-start"}`}>
-      <div className="text-sm sm:text-base p-2 sm:py-4 sm:px-8 space-y-2 w-full max-w-xs">
+    <div
+      className={`flex ${
+        bubble.sender === username ? "justify-end" : "justify-start"
+      } `}
+    >
+      <div className="text-sm sm:text-base p-2 sm:py-4 sm:px-8 space-y-2 w-full max-w-xs bg-gray-100 rounded-lg">
         <div className="flex flex-col items-start">
           <CgProfile size={30} color={"#000"} />
           <div>
-            <Link to={"/profile/" + bubble.sender} className="bg-[#fff] text-[#44288F]">
+            <Link to={"/profile/" + bubble.sender} className=" text-[#44288F]">
               @{bubble.sender}
             </Link>
-            <p className="bg-[#fff] text-xs md:text-sm text-right text-[#FFCC85]">
+            <p className="text-xs md:text-sm text-right text-[#FFCC85]">
               {bubble.date}
             </p>
           </div>
@@ -47,7 +51,12 @@ const BubbleChat = ({ bubble, privateKey }) => {
           {bubble.sender !== username && !bubble.isSystemMessage && (
             <>
               <button
-                onClick={() => downloadText(btoa(bubble.pesan), `Encrypted_Message_${bubble.date}.txt`)}
+                onClick={() =>
+                  downloadText(
+                    btoa(bubble.pesan),
+                    `Encrypted_Message_${bubble.date}.txt`
+                  )
+                }
                 className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2"
               >
                 Download Encrypted
@@ -66,7 +75,12 @@ const BubbleChat = ({ bubble, privateKey }) => {
                 {decryptedText}
               </p>
               <button
-                onClick={() => downloadText(decryptedText, `Decrypted_Message_${bubble.date}.txt`)}
+                onClick={() =>
+                  downloadText(
+                    decryptedText,
+                    `Decrypted_Message_${bubble.date}.txt`
+                  )
+                }
                 className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2"
               >
                 Download Decrypted

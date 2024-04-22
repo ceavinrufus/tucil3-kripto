@@ -23,7 +23,7 @@ const BubbleChatSim = ({ user, bubble }) => {
 
   const handleDecrypt = () => {
     const decrypted = rsa.decrypt(bubble.pesan, user.privateKey);
-    if (bubble.attachment) {
+    if (bubble.attachment?.content) {
       const decryptedFile = rsa.decryptFile(
         bubble.attachment?.content,
         user.privateKey

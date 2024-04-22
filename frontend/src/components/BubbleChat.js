@@ -23,7 +23,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
   const rsa = new RSA();
   const handleDecrypt = () => {
     const decrypted = rsa.decrypt(bubble.pesan, privateKey);
-    if (bubble.attachment) {
+    if (bubble.attachment?.content) {
       const decryptedFile = rsa.decryptFile(
         bubble.attachment?.content,
         privateKey

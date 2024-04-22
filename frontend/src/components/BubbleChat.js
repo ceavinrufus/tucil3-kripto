@@ -5,6 +5,16 @@ import { downloadFile } from "../utils/downloadFile";
 import { bufferToUint8Array } from "../utils/converter";
 import RSA from "../utils/RSA";
 
+const downloadText = (text, filename) => {
+  const element = document.createElement("a");
+  const file = new Blob([text], { type: 'text/plain' });
+  element.href = URL.createObjectURL(file);
+  element.download = filename || 'download.txt'; // Default filename if none provided
+  document.body.appendChild(element); // Append the element to the body
+  element.click(); // Simulate click to trigger download
+  document.body.removeChild(element); // Clean up
+}
+
 const BubbleChat = ({ bubble, privateKey }) => {
   const username = JSON.parse(localStorage.getItem("user")).username;
   const [toggleDecrypt, setToggleDecrypt] = useState(false);
@@ -20,6 +30,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
       {bubble.sender !== username && <div></div>}
       <div className="text-sm sm:text-base p-2 sm:py-4 sm:px-8 space-y-2 w-full">
         <div
+        
           className={`flex gap-4 md:gap-12 items-center w-full justify-between ${
             bubble.sender === username && "flex-row-reverse"
           }`}
@@ -129,11 +140,10 @@ const BubbleChat = ({ bubble, privateKey }) => {
                   )}
                 </>
               )}
-            </>
+            </div>
           )}
         </div>
       </div>
-
       {bubble.sender === username && <div></div>}
     </div>
   );

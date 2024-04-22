@@ -9,6 +9,7 @@ function ChatForm({ room, isJoined, socket }) {
   const [fileName, setFileName] = useState("");
   const [rsa, setRsa] = useState(null);
   const [publicKey, setPublicKey] = useState("");
+  const [privateKey, setPrivateKey] = useState("");
   const [showDownloadBtn, setShowDownloadBtn] = useState(false);
 
   const handleSubmit = (e) => {
@@ -27,10 +28,12 @@ function ChatForm({ room, isJoined, socket }) {
     setPesan("");
   };
   const initializeRSA = () => {
-    const newRsa = new RSA(); // This will automatically generate keys
+    const newRsa = new RSA();
     setRsa(newRsa);
-    const key = `e: ${newRsa.publicKey.e}, n: ${newRsa.publicKey.n}`;
-    setPublicKey(key);
+    const pubKey = `e: ${newRsa.publicKey.e}, n: ${newRsa.publicKey.n}`;
+    const priKey = `d: ${newRsa.privateKey.d}, n: ${newRsa.publicKey.n}`;
+    setPublicKey(pubKey);
+    setPrivateKey(priKey);
     setShowDownloadBtn(true);
 };
 
@@ -39,6 +42,16 @@ const downloadPublicKey = () => {
   const file = new Blob([publicKey], {type: 'text/plain'});
   element.href = URL.createObjectURL(file);
   element.download = "publicKey.pub";
+  document.body.appendChild(element);
+  element.click(); 
+  document.body.removeChild(element);
+}
+
+const downloadPrivateKey = () => {
+  const element = document.createElement("a");
+  const file = new Blob([privateKey], {type: 'text/plain'});
+  element.href = URL.createObjectURL(file);
+  element.download = "privateKey.pri";
   document.body.appendChild(element);
   element.click(); 
   document.body.removeChild(element);
@@ -88,19 +101,30 @@ const downloadPublicKey = () => {
           className="w-1/4 bg-[#44288F] px-4 py-2 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA]"
           onClick={initializeRSA}
         >
-          Generate Public Key
+          Generate Key
         </button>
-        {showDownloadBtn && (
+      <div className="w-3/4 border border-[#44288F] px-4 py-2 rounded-md text-[#000]">
+        <p>Public Key: {publicKey}</p>
+        <p>Private Key: {privateKey}</p>
+      </div>
+      </div>
+      <div className="flex text-xs md:text-base text-[#fff] gap-2 w-full">
+      {showDownloadBtn && (
           <button
-            className="bg-[#44288F] px-4 py-2 rounded-md"
+            className="bg-[#44288F] px-4 py-2 rounded-md w-1/2"
             onClick={downloadPublicKey}
           >
             Download Public Key
           </button>
         )}
-        <div className="w-3/4 border border-[#44288F] px-4 py-2 rounded-md text-[#000]">
-          Public Key: {publicKey}
-        </div>
+        {showDownloadBtn && (
+          <button
+            className="bg-[#44288F] px-4 py-2 rounded-md w-1/2"
+            onClick={downloadPrivateKey}
+          >
+            Download Private Key
+          </button>
+        )}
       </div>
       <div className="flex text-xs md:text-base text-[#fff] gap-2 w-full">
         <button className="w-full bg-[#44288F] px-4 py-2 rounded-md placeholder-[#000] disabled:cursor-not-allowed cursor-pointer disabled:bg-[#9881DA]">

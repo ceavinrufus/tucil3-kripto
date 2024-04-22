@@ -22,7 +22,10 @@ const BubbleChat = ({ bubble, privateKey }) => {
 
   const rsa = new RSA();
   const handleDecrypt = () => {
-    const decrypted = rsa.decrypt(bubble.pesan, privateKey);
+    if (bubble.pesan) {
+      const decrypted = rsa.decrypt(bubble.pesan, privateKey);
+      setDecryptedText(decrypted);
+    }
     if (bubble.attachment?.content) {
       const decryptedFile = rsa.decryptFile(
         bubble.attachment?.content,
@@ -30,7 +33,6 @@ const BubbleChat = ({ bubble, privateKey }) => {
       );
       setDecryptedFile(decryptedFile);
     }
-    setDecryptedText(decrypted);
   };
 
   return (
@@ -52,9 +54,11 @@ const BubbleChat = ({ bubble, privateKey }) => {
           </div>
         </div>
         <div>
-          <p className="break-all bg-gray-200 p-2 rounded">
-            {!bubble.isSystemMessage ? btoa(bubble.pesan) : bubble.pesan}
-          </p>
+          {bubble.pesan && (
+            <p className="break-all bg-green-200 p-2 rounded">
+              {!bubble.isSystemMessage ? btoa(bubble.pesan) : bubble.pesan}
+            </p>
+          )}
           {bubble.attachment?.name && (
             <button
               className={`underline text-xs text-[#44288F] text-left w-full ${
@@ -94,13 +98,13 @@ const BubbleChat = ({ bubble, privateKey }) => {
                     `Encrypted_Message_${bubble.date}.txt`
                   )
                 }
-                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2"
+                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2 text-xs"
               >
-                Download Encrypted
+                Download Encrypted Text
               </button>
               <button
                 onClick={handleDecrypt}
-                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2"
+                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2 text-xs"
               >
                 Decrypt
               </button>
@@ -135,9 +139,9 @@ const BubbleChat = ({ bubble, privateKey }) => {
                     `Decrypted_Message_${bubble.date}.txt`
                   )
                 }
-                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2"
+                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2 text-xs"
               >
-                Download Decrypted
+                Download Decrypted Text
               </button>
             </>
           )}

@@ -35,6 +35,7 @@ const Simulator = () => {
       {/* Chat */}
       <div className="flex w-full gap-4">
         <ChatScreenSim
+          key={1}
           messages={messages}
           setMessages={setMessages}
           user={alice}
@@ -42,6 +43,7 @@ const Simulator = () => {
         />
         <div className="border border-[#5E39C4] border-dashed"></div>
         <ChatScreenSim
+          key={2}
           messages={messages}
           setMessages={setMessages}
           user={bob}

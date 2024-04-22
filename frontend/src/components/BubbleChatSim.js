@@ -22,7 +22,10 @@ const BubbleChatSim = ({ user, bubble }) => {
   const rsa = new RSA();
 
   const handleDecrypt = () => {
-    const decrypted = rsa.decrypt(bubble.pesan, user.privateKey);
+    if (bubble.pesan) {
+      const decrypted = rsa.decrypt(bubble.pesan, user.privateKey);
+      setDecryptedText(decrypted);
+    }
     if (bubble.attachment?.content) {
       const decryptedFile = rsa.decryptFile(
         bubble.attachment?.content,
@@ -30,7 +33,6 @@ const BubbleChatSim = ({ user, bubble }) => {
       );
       setDecryptedFile(decryptedFile);
     }
-    setDecryptedText(decrypted);
   };
 
   return (
@@ -52,20 +54,22 @@ const BubbleChatSim = ({ user, bubble }) => {
           </div>
         </div>
         <div>
-          <p className="break-all bg-gray-200 p-2 rounded">
-            {!bubble.isSystemMessage ? btoa(bubble.pesan) : bubble.pesan}
-          </p>
+          {bubble.pesan && (
+            <p className="break-all bg-green-200 p-2 rounded">
+              {!bubble.isSystemMessage ? btoa(bubble.pesan) : bubble.pesan}
+            </p>
+          )}
           {bubble.attachment?.name && (
             <button
               className={`underline text-xs text-[#44288F] text-left w-full ${
                 bubble.sender === user.name && "text-right"
               }`}
-              onClick={() => {
+              onClick={() =>
                 downloadFile(
                   bufferToUint8Array(bubble.attachment?.content),
                   bubble.attachment?.name
-                );
-              }}
+                )
+              }
             >
               {bubble.attachment?.name}
             </button>
@@ -91,13 +95,13 @@ const BubbleChatSim = ({ user, bubble }) => {
                     `Encrypted_Message_${bubble.date}.txt`
                   )
                 }
-                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2"
+                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2 text-xs"
               >
-                Download Encrypted
+                Download Encrypted Text
               </button>
               <button
                 onClick={handleDecrypt}
-                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2"
+                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2 text-xs"
               >
                 Decrypt
               </button>
@@ -132,9 +136,9 @@ const BubbleChatSim = ({ user, bubble }) => {
                     `Decrypted_Message_${bubble.date}.txt`
                   )
                 }
-                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2"
+                className="bg-[#44288F] text-[#fff] px-2 py-1 rounded-md mt-2 text-xs"
               >
-                Download Decrypted
+                Download Decrypted Text
               </button>
             </>
           )}

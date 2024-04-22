@@ -15,7 +15,7 @@ function ChatForm({ room, isJoined, socket, encryptKey }) {
     if (pesan !== "" || file) {
       socket.emit(
         "send-message",
-        rsa.encrypt(pesan, encryptKey),
+        pesan ? rsa.encrypt(pesan, encryptKey) : null,
         {
           name: fileName,
           content: file ? rsa.encryptFile(file, encryptKey) : null,

@@ -15,7 +15,7 @@ function ChatFormSim({ sender, encryptKey, setMessages }) {
     if (pesan !== "" || file) {
       const time = new Date().toString();
       const bubble = {
-        pesan: rsa.encrypt(pesan, encryptKey),
+        pesan: pesan ? rsa.encrypt(pesan, encryptKey) : null,
         attachment: {
           name: fileName,
           content: file ? rsa.encryptFile(file, encryptKey) : null,
@@ -47,6 +47,7 @@ function ChatFormSim({ sender, encryptKey, setMessages }) {
         className="flex items-center gap-2 w-full"
       >
         <ReaderFile
+          id={sender}
           disabled={!encryptKey}
           setFile={setFile}
           setFileName={setFileName}

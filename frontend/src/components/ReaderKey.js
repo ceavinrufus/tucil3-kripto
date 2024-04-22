@@ -20,7 +20,6 @@ function ReaderKey({ setContent }) {
   return (
     <div className="input-group">
       <input
-        id="fileUpload"
         accept=".pub"
         onClick={(e) => (e.target.value = null)}
         onChange={(e) => onChange(e)}

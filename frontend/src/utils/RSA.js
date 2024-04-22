@@ -83,11 +83,11 @@ class RSA {
   }
   encryptFile(plainfile, publicKey) {
     const { e, n } = publicKey;
-    let encrypted = new Uint8Array(plainfile.length);
+    let encrypted = [];
     for (let i = 0; i < plainfile.length; i++) {
       const code = plainfile[i];
       const encryptedCode = this.modPow(code, e, n);
-      encrypted[i] = Number(encryptedCode);
+      encrypted[i] = encryptedCode.toString();
     }
     return encrypted;
   }
@@ -107,7 +107,7 @@ class RSA {
     const { d, n } = privateKey;
     let decrypted = new Uint8Array(cipherfile.length);
     for (let i = 0; i < cipherfile.length; i++) {
-      const encryptedCode = cipherfile[i];
+      const encryptedCode = Number(cipherfile[i]);
       const decryptedCode = this.modPow(encryptedCode, d, n);
       decrypted[i] = Number(decryptedCode);
     }

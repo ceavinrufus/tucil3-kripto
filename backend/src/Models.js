@@ -38,7 +38,7 @@ const pesanSchema = new Schema({
   pesan: String,
   attachment: {
     name: String,
-    content: Buffer,
+    content: [String],
   },
   date: String,
   sender: String,

@@ -13,6 +13,7 @@ import MyProfile from "./components/pages/MyProfile";
 import Room from "./components/pages/Room";
 import PrivateRoutes from "./utils/PrivateRoutes";
 import Settings from "./components/pages/Settings";
+import Simulator from "./components/pages/Simulator";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -43,6 +44,7 @@ function App() {
           </Route>
           <Route path="/" element={<LandingPage />} />
           <Route path="*" element={<LandingPage />} />
+          <Route path="/simulator" element={<Simulator />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>

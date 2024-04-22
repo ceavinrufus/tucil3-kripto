@@ -15,19 +15,18 @@ const downloadText = (text, filename) => {
   document.body.removeChild(element);
 };
 
-const BubbleChat = ({ bubble, privateKey }) => {
-  const username = JSON.parse(localStorage.getItem("user")).username;
+const BubbleChatSim = ({ user, bubble }) => {
   const [decryptedText, setDecryptedText] = useState("");
   const [decryptedFile, setDecryptedFile] = useState();
 
   const rsa = new RSA();
 
   const handleDecrypt = () => {
-    const decrypted = rsa.decrypt(bubble.pesan, privateKey);
+    const decrypted = rsa.decrypt(bubble.pesan, user.privateKey);
     if (bubble.attachment) {
       const decryptedFile = rsa.decryptFile(
         bubble.attachment?.content,
-        privateKey
+        user.privateKey
       );
       setDecryptedFile(decryptedFile);
     }
@@ -37,7 +36,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
   return (
     <div
       className={`flex ${
-        bubble.sender === username ? "justify-end" : "justify-start"
+        bubble.sender === user.name ? "justify-end" : "justify-start"
       } `}
     >
       <div className="text-sm sm:text-base p-2 sm:py-4 sm:px-8 space-y-2 w-full max-w-xs bg-gray-100 rounded-lg">
@@ -59,19 +58,19 @@ const BubbleChat = ({ bubble, privateKey }) => {
           {bubble.attachment?.name && (
             <button
               className={`underline text-xs text-[#44288F] text-left w-full ${
-                bubble.sender === username && "text-right"
+                bubble.sender === user.name && "text-right"
               }`}
-              onClick={() =>
+              onClick={() => {
                 downloadFile(
                   bufferToUint8Array(bubble.attachment?.content),
                   bubble.attachment?.name
-                )
-              }
+                );
+              }}
             >
               {bubble.attachment?.name}
             </button>
           )}
-          {bubble.sender !== username && !bubble.isSystemMessage && (
+          {bubble.sender !== user.name && !bubble.isSystemMessage && (
             <div className="flex gap-2">
               <button
                 onClick={() =>
@@ -92,7 +91,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
               </button>
             </div>
           )}
-          {(decryptedText || decryptedFile) && bubble.sender !== username && (
+          {(decryptedText || decryptedFile) && bubble.sender !== user.name && (
             <>
               {decryptedText && (
                 <p className="break-all bg-green-200 p-2 rounded mt-2">
@@ -102,7 +101,7 @@ const BubbleChat = ({ bubble, privateKey }) => {
               {bubble.attachment?.name && (
                 <button
                   className={`underline text-xs text-[#44288F] text-left w-full ${
-                    bubble.sender === username && "text-right"
+                    bubble.sender === user.name && "text-right"
                   }`}
                   onClick={() =>
                     downloadFile(
@@ -133,4 +132,4 @@ const BubbleChat = ({ bubble, privateKey }) => {
   );
 };
 
-export default BubbleChat;
+export default BubbleChatSim;
